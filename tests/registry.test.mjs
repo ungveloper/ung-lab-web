@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';const root=path.resolve(import.meta.dirname,'..');
+test('정확히 11개 도구를 등록한다',()=>{const s=fs.readFileSync(path.join(root,'lib/tools.ts'),'utf8');const tools=[...s.matchAll(/\{slug:"([^"]+)"/g)].map(m=>m[1]);assert.equal(tools.length,11);assert.equal(new Set(tools).size,11);for(const required of ['image-converter','pptx-viewer','background-remover','csv-viewer'])assert.ok(tools.includes(required));});
+test('WebP to PNG 변환을 포함한다',()=>{const s=fs.readFileSync(path.join(root,'lib/tools.ts'),'utf8');assert.match(s,/WebP → PNG/);});
+test('기본 배포는 색인 비활성화이며 서버 업로드 API는 생성하지 않는다',()=>{const s=fs.readFileSync(path.join(root,'app/robots.ts'),'utf8');assert.match(s,/NEXT_PUBLIC_LAUNCH_READY/);assert.equal(fs.existsSync(path.join(root,'app/api')),false);});
+test('기본 파일 처리에서 업로드 fetch API를 사용하지 않는다',()=>{for(const f of ['components/tool-workspace.tsx','lib/process-files.ts']){const s=fs.readFileSync(path.join(root,f),'utf8');assert.doesNotMatch(s,/\bfetch\s*\(/);}});

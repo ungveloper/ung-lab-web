@@ -1,0 +1,1 @@
+import type {MetadataRoute} from "next";export default function manifest():MetadataRoute.Manifest{return {name:"웅이연구소",short_name:"웅이연구소",description:"PDF·이미지·문서 무료 온라인 도구",start_url:"/",display:"browser",background_color:"#ffffff",theme_color:"#2563eb"}}

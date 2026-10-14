@@ -1,0 +1,2 @@
+import {FileImage,Files,Minimize2,Scaling,RefreshCw,Crop,ScanFace,FileText,Presentation,Table2,ListFilter,File} from "lucide-react";
+export function ToolIcon({name,size=24}:{name:string;size?:number}){const icons={FileImage,Files,Minimize2,Scaling,RefreshCw,Crop,ScanFace,FileText,Presentation,Table2,ListFilter};const Icon=icons[name as keyof typeof icons]??File;return <Icon size={size} strokeWidth={1.85}/>}
