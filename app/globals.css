@@ -35,3 +35,27 @@
 .crop-preview-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;color:#6b798f}
 .crop-preview-footer span:first-child{font-weight:700;color:#295dbd}
 @media(pointer:coarse){.crop-handle{width:24px;height:24px;border-radius:7px}.crop-handle-nw{left:-12px;top:-12px}.crop-handle-ne{right:-12px;top:-12px}.crop-handle-sw{left:-12px;bottom:-12px}.crop-handle-se{right:-12px;bottom:-12px}}
+
+/* Session favorites: keep the star outside navigation links for keyboard/touch access. */
+.tool-card{position:relative}
+.tool-card .favorite-button--card{position:absolute;top:15px;right:15px;z-index:2}
+.tool-card .card-arrow{margin-right:43px}
+.favorite-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:38px;height:38px;padding:0;border:1px solid #dce5f3;border-radius:11px;color:#8290a5;background:#fff;cursor:pointer;transition:background-color .16s,border-color .16s,color .16s}
+.favorite-button:hover{background:#fff8e8;border-color:#eed08a;color:#bc850c}
+.favorite-button.is-active{background:#fff7df;border-color:#f1d382;color:#d49911}
+.favorite-button:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+.favorite-button--detail{width:43px;height:43px;border-radius:12px}
+.favorite-button--compact{width:35px;height:35px;border-radius:9px}
+.favorites-section{margin:1px 0 38px;padding:25px;border:1px solid #e3e9f5;border-radius:19px;background:#f8faff}
+.favorites-section .section-title{margin-bottom:17px}
+.favorites-section .eyebrow{color:#ae7b10}
+.favorites-section .tools-grid{gap:13px}
+.tool-intro-title{display:flex;align-items:center;gap:13px}
+.tool-intro-title h1{margin-right:0}
+.related-item,.favorite-category-card{position:relative;min-width:0}
+.related-grid .related-item>a{display:flex;align-items:center;gap:11px;padding:15px 54px 15px 15px;border:1px solid #e6ecf4;border-radius:12px;font-size:13px;font-weight:650;min-height:60px}
+.related-grid .related-item>a svg:first-child{color:#4978d9}
+.related-grid .related-item>a svg:last-child{margin-left:auto}
+.related-item .favorite-button--compact,.favorite-category-card .favorite-button--compact{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2}
+.favorite-category-card .guide-card{display:block;padding-right:53px}
+@media(max-width:600px){.favorites-section{padding:15px;margin-bottom:30px}.tool-card .favorite-button--card{right:9px;top:9px}.tool-card .card-arrow{margin-right:34px}.favorite-button{width:34px;height:34px}.favorite-button--detail{width:40px;height:40px}.favorites-section .tools-grid{gap:10px}}
