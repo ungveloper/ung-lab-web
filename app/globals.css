@@ -59,3 +59,11 @@
 .related-item .favorite-button--compact,.favorite-category-card .favorite-button--compact{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2}
 .favorite-category-card .guide-card{display:block;padding-right:53px}
 @media(max-width:600px){.favorites-section{padding:15px;margin-bottom:30px}.tool-card .favorite-button--card{right:9px;top:9px}.tool-card .card-arrow{margin-right:34px}.favorite-button{width:34px;height:34px}.favorite-button--detail{width:40px;height:40px}.favorites-section .tools-grid{gap:10px}}
+
+/* The checkerboard represents transparency; output RGB is preserved. */
+.background-result-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0;padding:14px;border:1px solid #e3eaf5;border-radius:12px}
+.background-result-item{min-width:0}.background-result-item>span{display:block;margin-bottom:9px;font-size:12px;font-weight:750;color:#536b88}
+.background-result-canvas{height:240px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f5f7fb;border:1px solid #e0e8f3;border-radius:9px}
+.background-result-checker{background-color:white;background-image:linear-gradient(45deg,#e9edf4 25%,transparent 25%),linear-gradient(-45deg,#e9edf4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9edf4 75%),linear-gradient(-45deg,transparent 75%,#e9edf4 75%);background-position:0 0,0 10px,10px -10px,-10px 0;background-size:20px 20px}
+.background-result-canvas img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+@media(max-width:600px){.background-result-preview{grid-template-columns:1fr}.background-result-canvas{height:210px}}
