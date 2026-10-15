@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { guides } from "@/lib/guides";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function Page({ params }: PageProps) {
+async function GuidePageContent({ params }: PageProps) {
   const { slug } = await params;
   const guide = guides.find((item) => item.slug === slug);
   if (!guide) notFound();
@@ -39,5 +40,15 @@ export default async function Page({ params }: PageProps) {
         도구 바로 사용하기 →
       </Link>
     </main>
+  );
+}
+
+
+// The slug promise must be awaited under Suspense during instant navigation.
+export default function Page({ params }: PageProps) {
+  return (
+    <Suspense fallback={<main className="content-page" role="status" aria-busy="true"><h1>가이드를 불러오는 중입니다…</h1></main>}>
+      <GuidePageContent params={params} />
+    </Suspense>
   );
 }
