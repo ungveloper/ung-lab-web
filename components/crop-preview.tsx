@@ -57,10 +57,15 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
   useEffect(() => {
     const image = bitmapRef.current;
     const canvas = canvasRef.current;
-    if (!image || !canvas || !natural || !dimensions) return;
-    const scale = Math.min(1, 1200 / Math.max(dimensions.width, dimensions.height));
-    canvas.width = Math.max(1, Math.round(dimensions.width * scale));
-    canvas.height = Math.max(1, Math.round(dimensions.height * scale));
+    if (!image || !canvas || !natural) return;
+    // Derive the rotated size inside the effect from its actual dependencies.
+    // This avoids depending on a new `dimensions` object created each render.
+    const isQuarterTurn = Math.abs(settings.rotate) % 180 === 90;
+    const width = isQuarterTurn ? natural.height : natural.width;
+    const height = isQuarterTurn ? natural.width : natural.height;
+    const scale = Math.min(1, 1200 / Math.max(width, height));
+    canvas.width = Math.max(1, Math.round(width * scale));
+    canvas.height = Math.max(1, Math.round(height * scale));
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -70,7 +75,7 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
     ctx.scale(settings.flipX ? -scale : scale, settings.flipY ? -scale : scale);
     ctx.drawImage(image, -image.width / 2, -image.height / 2);
     ctx.restore();
-  }, [natural, dimensions?.width, dimensions?.height, settings.rotate, settings.flipX, settings.flipY]);
+  }, [natural, settings.rotate, settings.flipX, settings.flipY]);
 
   const position = useCallback((e: PointerEvent<HTMLDivElement>) => {
     const box = stageRef.current?.getBoundingClientRect();
