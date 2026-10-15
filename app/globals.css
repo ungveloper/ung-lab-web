@@ -11,3 +11,27 @@
 .card-tags button.mini-tag{border:0;cursor:pointer}.card-tags button.mini-tag[aria-pressed=true]{background:#e6efff;color:#1d56c6}.extra-tags{display:flex;gap:5px}.extra-tags button{background:#f4f7fc;border:0;color:#3e5d8a;border-radius:5px;font-size:11px;padding:5px}
 
 @media print{.site-header,.site-footer,.prelaunch,.breadcrumb,.tool-intro,.workspace-heading,.upload-zone,.files-section,.settings-panel,.run-area,.trust-strip,.details-section,.related,.office-viewer .viewer-toolbar,.office-viewer>.workspace-notice,.viewer-host>.btn{display:none!important}.workspace,.office-viewer{padding:0;border:0;box-shadow:none}.tool-page,.site-width{width:100%;margin:0;padding:0}.office-canvas{max-height:none;overflow:visible;background:#fff}.office-canvas .docx{box-shadow:none!important;margin:0 auto!important}}
+
+/* 편집 도구 중심으로 정리: 중복 홍보·안내 배너는 노출하지 않음. */
+.trust-strip,.foot-safe{display:none}
+.hero{padding-top:58px;padding-bottom:74px}
+@media(max-width:600px){.hero{padding-top:42px;padding-bottom:72px}}
+
+/* 모바일 Pointer Events 기반 이미지 자르기: 선택 좌표와 출력 좌표가 동일함. */
+.crop-preview{margin:16px 0 20px;border:1px solid #e1eaf7;padding:15px;border-radius:12px}
+.crop-preview-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.crop-preview-heading b{font-size:14px}
+.crop-preview-heading button{white-space:nowrap}
+.crop-preview p{font-size:12px;line-height:1.55;color:#6b798f;margin:5px 0 13px}
+.crop-stage{position:relative;margin:12px auto;max-width:100%;background:repeating-conic-gradient(#fff 0 25%,#eef1f7 0 50%) 50%/18px 18px;border:1px solid #c6d5ec;border-radius:6px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:contain;cursor:crosshair}
+.crop-stage-image{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
+.crop-selection{position:absolute;border:2px solid #2563eb;background:rgba(37,99,235,.07);box-shadow:0 0 0 9999px rgba(10,25,47,.40);cursor:move;touch-action:none;outline-offset:3px;min-width:1px;min-height:1px}
+.crop-selection:focus-visible{outline:3px solid #2563eb}
+.crop-handle{position:absolute;width:18px;height:18px;border:2px solid #2563eb;border-radius:5px;background:white;box-shadow:0 1px 5px #0004;touch-action:none;z-index:3}
+.crop-handle-nw{left:-10px;top:-10px;cursor:nwse-resize}
+.crop-handle-ne{right:-10px;top:-10px;cursor:nesw-resize}
+.crop-handle-sw{left:-10px;bottom:-10px;cursor:nesw-resize}
+.crop-handle-se{right:-10px;bottom:-10px;cursor:nwse-resize}
+.crop-preview-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;color:#6b798f}
+.crop-preview-footer span:first-child{font-weight:700;color:#295dbd}
+@media(pointer:coarse){.crop-handle{width:24px;height:24px;border-radius:7px}.crop-handle-nw{left:-12px;top:-12px}.crop-handle-ne{right:-12px;top:-12px}.crop-handle-sw{left:-12px;bottom:-12px}.crop-handle-se{right:-12px;bottom:-12px}}
