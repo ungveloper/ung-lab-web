@@ -1,13 +1,14 @@
 "use client";
 
-import {useEffect,useRef,useState,type FormEvent,type KeyboardEvent} from "react";
+import {useEffect,useRef,useState,type FormEvent,type KeyboardEvent,type MouseEvent} from "react";
 import Link from "next/link";
-import {ArrowRight,ChevronLeft,FlaskConical,Menu,MessageCirclePlus,PanelLeftClose,Send,Search,Star,X} from "lucide-react";
+import {ArrowRight,ChevronLeft,FlaskConical,Menu,Send,Search} from "lucide-react";
 import {tools,type Tool} from "@/lib/tools";
 import {ToolIcon} from "@/components/tool-icon";
 import {ToolExplorer} from "@/components/tool-explorer";
 import {FavoriteButton} from "@/components/favorite-button";
-import {useFavorites} from "@/lib/use-favorites";
+import {AppSidebar} from "@/components/app-sidebar";
+import {saveToolReturn} from "@/lib/recent-tools-state.mjs";
 import {recommendTools} from "@/lib/tool-matcher.mjs";
 
 type ChatMessage={id:number;kind:"user"|"assistant";text:string;slugs?:string[]};
@@ -29,11 +30,11 @@ export function ToolChatHome(){
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const inputRef=useRef<HTMLTextAreaElement>(null);
   const bottomRef=useRef<HTMLDivElement>(null);
-  const {favoriteIds}=useFavorites();
   useEffect(()=>{let cancelled=false;const controller=new AbortController();
     fetch("/api/tool-catalog",{cache:"no-store",signal:controller.signal}).then(async r=>{if(!r.ok)throw new Error("Catalog HTTP error");return await r.json() as CatalogResponse}).then(data=>{if(!cancelled&&Array.isArray(data.tools)){setCatalog(data.tools);setSource(data.source)}}).catch(()=>{if(!cancelled)setSource("unavailable")});
     return ()=>{cancelled=true;controller.abort()};
   },[]);
+  useEffect(()=>{if(new URLSearchParams(window.location.search).get("view")==="all")queueMicrotask(()=>setMode("browse"));},[]);
   useEffect(()=>{const restored=loadTranscript();if(restored.length)queueMicrotask(()=>setMessages(restored));},[]);
   useEffect(()=>{if(!messages.length)return;try{window.sessionStorage.setItem(transcriptKey,JSON.stringify(messages.slice(-40)))}catch{/* Private browsing: conversation still works. */}},[messages]);
   useEffect(()=>{if(messages.length>0&&mode==="chat")bottomRef.current?.scrollIntoView({block:"end",behavior:"auto"})},[messages,mode]);
@@ -61,17 +62,15 @@ export function ToolChatHome(){
   function keyDown(e:KeyboardEvent<HTMLTextAreaElement>){if(e.key==="Enter"&&!e.shiftKey&&!e.nativeEvent.isComposing){e.preventDefault();submit()}}
   function onSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();submit()}
   const selectedCatalog=new Map(catalog.map(t=>[t.slug,t]));
-  return <div className={`chat-home${sidebarCollapsed?" chat-home--compact":""}`}>
-    {sidebarOpen&&<button type="button" aria-label="사이드바 닫기" className="chat-sidebar-shade" onClick={()=>setSidebarOpen(false)}/>}
-    <aside className={`chat-sidebar${sidebarOpen?" is-open":""}`} aria-label="도구 탐색 사이드바">
-      <div className="chat-sidebar-top"><Link href="/" className="chat-brand" onClick={newChat}><span className="chat-brand-icon"><FlaskConical size={21}/></span><strong>웅이연구소</strong></Link><button type="button" aria-label="사이드바 접기" className="chat-sidebar-collapse" onClick={()=>setSidebarCollapsed(v=>!v)}><PanelLeftClose size={18}/></button><button type="button" aria-label="사이드바 닫기" className="chat-mobile-close" onClick={()=>setSidebarOpen(false)}><X size={19}/></button></div>
-      <nav className="chat-side-nav" aria-label="채팅 및 도구">
-        <button type="button" className={`chat-side-link${mode==="chat"?" is-selected":""}`} onClick={newChat}><MessageCirclePlus size={19}/><span>새 대화</span></button>
-        <button type="button" className={`chat-side-link${mode==="browse"?" is-selected":""}`} onClick={showBrowse}><Menu size={19}/><span>모든 기능 보기</span></button>
-      </nav>
-      {favoriteIds.length>0&&<div className="chat-sidebar-favorites"><p><Star size={14} fill="currentColor"/> 즐겨찾는 도구</p>{favoriteIds.map(slug=>{const item=selectedCatalog.get(slug);return item?<Link key={slug} href={`/tools/${slug}`} onClick={()=>setSidebarOpen(false)}><ToolIcon name={item.icon} size={17}/><span>{item.title}</span></Link>:null})}</div>}
-      <div className="chat-sidebar-bottom"><span>AI API 없이 무료 검색</span><Link href="/guides">사용 가이드 <ArrowRight size={13}/></Link></div>
-    </aside>
+  function captureToolNavigation(event:MouseEvent<HTMLDivElement>){
+    const target=event.target;
+    if(!(target instanceof Element))return;
+    const href=target.closest("a[href]")?.getAttribute("href")??"";
+    const slug=/^\/tools\/([a-z0-9-]+)(?:[?#]|$)/.exec(href)?.[1];
+    if(slug)saveToolReturn(slug,mode==="browse"?"/?view=all":"/");
+  }
+  return <div className={`chat-home${sidebarCollapsed?" chat-home--compact":""}`} onClickCapture={captureToolNavigation}>
+    <AppSidebar mode={mode} catalog={catalog} mobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} onNewChat={newChat} onBrowse={showBrowse}/>
     <div className="chat-main">
       <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button><button type="button" className="chat-browse-button" onClick={showBrowse}><Search size={16}/> 모든 기능 보기</button></header>
       {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1><p>카테고리와 태그를 선택하거나 이름으로 검색하세요.</p></div><ToolExplorer catalog={catalog}/></main>:

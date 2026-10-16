@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FlaskConical, Github, ShieldCheck } from "lucide-react";
 import "./globals.css";
+import "./chat.css";
 
 export const metadata: Metadata = {
  metadataBase: new URL("https://ung-lab.com"),

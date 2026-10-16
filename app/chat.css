@@ -1,4 +1,4 @@
-/* Homepage-only conversational navigator. Existing tool pages retain their design. */
+/* Shared conversational navigator for the homepage and tool detail pages. */
 body:has(.chat-home) .site-header,body:has(.chat-home) .site-footer{display:none}
 body:has(.chat-home){background:#fff}
 .chat-home{--chat-sidebar:#f9f9f9;display:flex;min-height:100dvh;color:#202123;background:#fff;font-family:Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
@@ -22,3 +22,40 @@ body:has(.chat-home){background:#fff}
   .chat-conversation--empty .chat-composer-area{padding-bottom:max(14px,env(safe-area-inset-bottom))}
 }
 @media(max-height:640px){.chat-conversation--empty{justify-content:flex-start}}
+
+/* Shared navigation for both chat home and individual tool workspaces. */
+body:has(.tool-app-shell) .site-header,
+body:has(.tool-app-shell) .site-footer{display:none}
+body:has(.tool-app-shell){background:#fff}
+.tool-app-shell{--chat-sidebar:#f9f9f9;display:flex;min-height:100dvh;background:#fff;color:#202123;font-family:Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.tool-app-shell button{font:inherit}
+.tool-app-shell .chat-main{min-width:0}
+.tool-page-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.tool-page-scroll>.site-width.tool-page{width:min(1100px,calc(100% - 64px));margin-inline:auto;padding-top:20px;padding-bottom:100px}
+.tool-app-topbar{border-bottom:1px solid #edf0f4}
+.tool-app-back{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;padding:9px 12px;border-radius:10px;font-size:13px!important;font-weight:650!important;color:#4d5a70;white-space:nowrap}
+.tool-app-back:hover{background:#f0f3f8;color:#1d4ed8}
+.tool-app-top-title{font-size:12px;color:#9aa4b3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tool-app-topbar .chat-browse-button{flex-shrink:0}
+.chat-sidebar-scroll{display:flex;flex:1;min-height:0;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px}
+.chat-sidebar-recent{margin-top:25px;padding:0 7px;display:grid;gap:2px;min-width:0}
+.chat-sidebar-recent>p{display:flex;gap:8px;align-items:center;font-weight:740;font-size:12px;color:#606c81;margin-bottom:8px}
+.chat-sidebar-recent>a{display:flex;align-items:center;gap:10px;padding:9px;border-radius:8px;color:#5b6371;font-size:13px;white-space:nowrap;min-width:0}
+.chat-sidebar-recent>a span{overflow:hidden;text-overflow:ellipsis}
+.chat-sidebar-recent>a:hover,.chat-sidebar-recent>a.is-selected,.chat-sidebar-favorites>a.is-selected{background:#ededf1;color:#283448}
+.chat-sidebar-scroll .chat-sidebar-favorites{flex-shrink:0}
+.chat-sidebar-scroll .chat-sidebar-recent{flex-shrink:0}
+.chat-home--compact .chat-sidebar-recent{display:none}
+.chat-home--compact .chat-sidebar-scroll{display:none}
+.chat-sidebar-bottom{flex-shrink:0}
+@media(max-width:1050px){.tool-page-scroll>.site-width.tool-page{width:min(100% - 40px,1100px)}}
+@media(max-width:720px){
+  .tool-app-topbar{padding-inline:10px}
+  .tool-app-back{padding:7px 5px;font-size:12px!important}
+  .tool-app-top-title{display:none}
+  .tool-app-topbar .chat-browse-button{font-size:11px!important;padding:8px}
+  .tool-page-scroll>.site-width.tool-page{width:calc(100% - 26px);padding-top:18px;padding-bottom:75px}
+  .chat-home--compact .chat-sidebar-scroll{display:flex}
+  .chat-home--compact .chat-sidebar-recent{display:grid}
+}
+@media(max-width:370px){.tool-app-topbar .chat-browse-button span{display:none}}
