@@ -2,11 +2,10 @@
 
 import {useEffect,useRef,useState,type FormEvent,type KeyboardEvent,type MouseEvent} from "react";
 import Link from "next/link";
-import {ArrowRight,Menu,Send} from "lucide-react";
+import {ArrowRight,Send} from "lucide-react";
 import {tools,type Tool} from "@/lib/tools";
 import {ToolIcon} from "@/components/tool-icon";
 import {FavoriteButton} from "@/components/favorite-button";
-import {AppSidebar} from "@/components/app-sidebar";
 import {AppContentContainer} from "@/components/app-content-container";
 import {saveToolReturn} from "@/lib/recent-tools-state.mjs";
 import {recommendTools} from "@/lib/tool-matcher.mjs";
@@ -26,8 +25,6 @@ export function ToolChatHome(){
   const [popularity,setPopularity]=useState<Record<string,number>>({});
   const [exampleQueries,setExampleQueries]=useState<string[]>(defaultQueries);
   const [source,setSource]=useState<CatalogResponse["source"]>("setup-required");
-  const [sidebarOpen,setSidebarOpen]=useState(false);
-  const [sidebarCollapsed,setSidebarCollapsed]=useState(false);
   const [draft,setDraft]=useState("");
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const inputRef=useRef<HTMLTextAreaElement>(null);
@@ -52,6 +49,11 @@ export function ToolChatHome(){
   },[]);
   useEffect(()=>{if(new URLSearchParams(window.location.search).get("view")==="all")window.location.replace("/tools");},[]);
   useEffect(()=>{const restored=loadTranscript();if(restored.length)queueMicrotask(()=>setMessages(restored));},[]);
+  useEffect(()=>{
+    const reset=()=>{setMessages([]);setDraft("");inputRef.current?.focus()};
+    window.addEventListener("ung-lab:new-chat",reset);
+    return ()=>window.removeEventListener("ung-lab:new-chat",reset);
+  },[]);
   useEffect(()=>{if(!messages.length)return;try{window.sessionStorage.setItem(transcriptKey,JSON.stringify(messages.slice(-40)))}catch{/* Private browsing: conversation still works. */}},[messages]);
   useEffect(()=>{if(messages.length>0)bottomRef.current?.scrollIntoView({block:"end",behavior:"auto"})},[messages]);
   // Grow with input (including pasted/newline text), then scroll only beyond 160px.
@@ -75,24 +77,19 @@ export function ToolChatHome(){
       const id=prev.reduce((max,message)=>Math.max(max,message.id),0)+1;
       return [...prev,{id,kind:"user" as const,text},{id:id+1,kind:"assistant" as const,text:answer,slugs:shown.map(t=>t.slug)}].slice(-40);
     });
-    setDraft("");setSidebarOpen(false);
+    setDraft("");
   }
-  function newChat(){setMessages([]);setDraft("");setSidebarOpen(false);try{window.sessionStorage.removeItem(transcriptKey)}catch{/* ignore */}inputRef.current?.focus()}
   function keyDown(e:KeyboardEvent<HTMLTextAreaElement>){if(e.key==="Enter"&&!e.shiftKey&&!e.nativeEvent.isComposing){e.preventDefault();submit()}}
   function onSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();submit()}
   const selectedCatalog=new Map(catalog.map(t=>[t.slug,t]));
-  function captureToolNavigation(event:MouseEvent<HTMLDivElement>){
+  function captureToolNavigation(event:MouseEvent<HTMLElement>){
     const target=event.target;
     if(!(target instanceof Element))return;
     const href=target.closest("a[href]")?.getAttribute("href")??"";
     const slug=/^\/tools\/([a-z0-9-]+)(?:[?#]|$)/.exec(href)?.[1];
     if(slug)saveToolReturn(slug,"/");
   }
-  return <div className={`chat-home${sidebarCollapsed?" chat-home--compact":""}`} onClickCapture={captureToolNavigation}>
-    <AppSidebar mode="chat" catalog={catalog} mobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} onNewChat={newChat}/>
-    <div className="chat-main">
-      <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><Link href="/" className="chat-top-title">웅이연구소 <span>도구 찾기</span></Link></header>
-      <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화">
+  return <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화" onClickCapture={captureToolNavigation}>
         {messages.length===0?<AppContentContainer className="chat-empty-center">
           <div className="chat-welcome"><h1>어떤 작업을 도와드릴까요?</h1></div>
           <AppContentContainer className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form></AppContentContainer>
@@ -104,7 +101,5 @@ export function ToolChatHome(){
             </div>:null})}</div>}</div></div>)}</AppContentContainer><div ref={bottomRef}/></div>
           <AppContentContainer className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form>{source==="unavailable"&&<span className="sr-only" role="status">기본 도구 목록 사용 중</span>}</AppContentContainer>
         </>}
-      </main>
-    </div>
-  </div>
+  </main>;
 }

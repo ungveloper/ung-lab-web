@@ -15,7 +15,7 @@ test("Chat, browse and both guide routes all use the same frame",()=>{
   const chat=read("components/tool-chat-home.tsx");
   const browsePage=read("components/tool-browse-page.tsx");
   const browse=read("components/guide-browser.tsx");
-  const article=read("app/guides/[slug]/page.tsx");
+  const article=read("app/(workspace)/guides/[slug]/page.tsx");
   for(const name of ["chat-empty-center","chat-thread","chat-composer-area"])
     assert.ok(chat.includes(`<AppContentContainer className="${name}">`),name);
   assert.match(browsePage,/<AppContentContainer className="chat-browse-content">/);
@@ -24,14 +24,12 @@ test("Chat, browse and both guide routes all use the same frame",()=>{
 });
 
 test("Duplicate all-tools action is absent from every header; sidebar navigation remains",()=>{
-  for(const path of ["components/tool-chat-home.tsx","components/guide-shell.tsx","components/tool-page-shell.tsx","components/app-list-shell.tsx"])
+  for(const path of ["components/tool-chat-home.tsx","components/workspace-shell.tsx","components/tool-page-shell.tsx"])
     assert.doesNotMatch(read(path),/chat-browse-button|모든 기능 보기<\/span>/,path);
   const sidebar=read("components/app-sidebar.tsx");
   assert.match(sidebar,/모든 기능 보기/);
   assert.match(sidebar,/chat-side-link/);
-  const home=read("components/tool-chat-home.tsx");
-  assert.match(home,/chat-menu-button/);
-  assert.match(read("components/app-list-shell.tsx"),/chat-menu-button/);
+  assert.match(read("components/workspace-shell.tsx"),/chat-menu-button/);
 });
 
 test("Mobile browse and guides share horizontal margin policy",()=>{

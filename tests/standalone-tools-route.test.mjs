@@ -5,15 +5,15 @@ import {safeReturnTarget} from "../lib/recent-tools-state.mjs";
 const read=(path)=>readFileSync(new URL(`../${path}`,import.meta.url),"utf8");
 
 test("All tools is an independent route and uses the common app list shell",()=>{
-  const page=read("app/tools/page.tsx");
+  const page=read("app/(workspace)/tools/page.tsx");
   const directory=read("components/tool-browse-page.tsx");
-  const shell=read("components/app-list-shell.tsx");
+  const shell=read("components/workspace-shell.tsx");
   assert.match(page,/export default function Page/);
   assert.match(page,/<ToolBrowsePage\/>/);
-  assert.match(directory,/<AppListShell mode="browse" catalog=\{catalog\}>/);
+  assert.doesNotMatch(directory,/<AppListShell/);
   assert.match(directory,/<AppContentContainer className="chat-browse-content">/);
   assert.match(shell,/<AppSidebar mode=\{mode\}/);
-  assert.match(read("components/guide-shell.tsx"),/<AppListShell mode="guides">/);
+  assert.match(read("app/(workspace)/layout.tsx"),/<WorkspaceShell>/);
 });
 
 test("Sidebar always navigates to /tools; homepage only renders chat",()=>{

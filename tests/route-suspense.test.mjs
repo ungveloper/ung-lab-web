@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const routes = [
   ['app/tools/[slug]/page.tsx', 'ToolPageContent'],
   ['app/category/[slug]/page.tsx', 'CategoryPageContent'],
-  ['app/guides/[slug]/page.tsx', 'GuidePageContent'],
+  ['app/(workspace)/guides/[slug]/page.tsx', 'GuidePageContent'],
 ];
 
 test('Next.js 16 dynamic pages await params inside Suspense children', () => {

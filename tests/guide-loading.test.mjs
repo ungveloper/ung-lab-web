@@ -5,16 +5,16 @@ import {readFileSync} from "node:fs";
 const read=(p)=>readFileSync(new URL(`../${p}`,import.meta.url),"utf8");
 
 test("가이드 목록과 상세 페이지는 하나의 영속 레이아웃으로 사이드바를 공유한다",()=>{
-  assert.match(read("app/guides/layout.tsx"),/<GuideShell>\{children\}<\/GuideShell>/);
-  assert.match(read("app/guides/page.tsx"),/<GuideBrowser\/>/);
-  assert.doesNotMatch(read("app/guides/page.tsx"),/<GuideShell/);
-  assert.doesNotMatch(read("app/guides/[slug]/page.tsx"),/<GuideShell/);
-  assert.match(read("components/guide-shell.tsx"),/<AppListShell mode="guides"/);
+  assert.match(read("app/(workspace)/layout.tsx"),/<WorkspaceShell>\{children\}<\/WorkspaceShell>/);
+  assert.match(read("app/(workspace)/guides/page.tsx"),/<GuideBrowser\/>/);
+  assert.doesNotMatch(read("app/(workspace)/guides/page.tsx"),/<GuideShell/);
+  assert.doesNotMatch(read("app/(workspace)/guides/[slug]/page.tsx"),/<GuideShell/);
+  assert.match(read("components/workspace-shell.tsx"),/<AppSidebar mode={mode}/);
 });
 
 test("Next.js 가이드 라우트 로딩에 공통 스피너가 표시된다",()=>{
-  assert.match(read("app/guides/loading.tsx"),/<GuideRouteLoading\/>/);
-  assert.match(read("app/guides/[slug]/page.tsx"),/<Suspense fallback=\{<GuideRouteLoading\/>\}>/);
+  assert.match(read("app/(workspace)/guides/loading.tsx"),/<GuideRouteLoading\/>/);
+  assert.match(read("app/(workspace)/guides/[slug]/page.tsx"),/<Suspense fallback=\{<GuideRouteLoading\/>\}>/);
   const loading=read("components/guide-route-loading.tsx");
   assert.match(loading,/className="guide-route-loading" role="status" aria-live="polite" aria-busy="true"/);
   assert.match(loading,/className="tool-app-loading-spinner" aria-hidden="true"/);

@@ -34,12 +34,12 @@ test('카드 왼쪽 별표 오른쪽 화살표가 독립된 클릭 표면을 가
   assert.ok(jsx.indexOf('<FavoriteButton slug={tool.slug}')<jsx.indexOf('<Link href={`/tools/${tool.slug}`} aria-label='));
 });
 test('가이드 목록, 상세 모두 사이드바 공유, 3열 및 검색',()=>{
-  assert.match(src('app/guides/layout.tsx'),/<GuideShell>\{children\}<\/GuideShell>/);
-  assert.match(src('app/guides/page.tsx'),/<GuideBrowser\/>/);
-  assert.doesNotMatch(src('app/guides/[slug]/page.tsx'),/<GuideShell>/);
+  assert.match(src('app/(workspace)/layout.tsx'),/<WorkspaceShell>\{children\}<\/WorkspaceShell>/);
+  assert.match(src('app/(workspace)/guides/page.tsx'),/<GuideBrowser\/>/);
+  assert.doesNotMatch(src('app/(workspace)/guides/[slug]/page.tsx'),/<GuideShell>/);
   assert.match(src('components/guide-browser.tsx'),/type="search"/);
-  assert.match(src('components/guide-shell.tsx'),/<AppListShell mode="guides"/);
-  assert.match(src('components/app-list-shell.tsx'),/<AppSidebar mode={mode}/);
+  assert.match(src('components/workspace-shell.tsx'),/<AppSidebar mode={mode}/);
+  assert.match(src('components/workspace-shell.tsx'),/workspace-page-body/);
   assert.match(src('app/chat.css'),/\.guide-cards\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 });
 test('도구별 질문 유형만 서버에 전달하고 원문을 DB에 남기지 않는다',()=>{
