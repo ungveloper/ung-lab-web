@@ -6,6 +6,7 @@ import {ArrowUpRight, BookOpen, Search, X} from "lucide-react";
 import {guides} from "@/lib/guides";
 import {tools} from "@/lib/tools";
 import {ToolIcon} from "@/components/tool-icon";
+import {AppContentContainer} from "@/components/app-content-container";
 
 const bySlug=new Map(tools.map(tool=>[tool.slug,tool]));
 export function GuideBrowser(){
@@ -18,7 +19,7 @@ export function GuideBrowser(){
       return !term||text.includes(term);
     });
   },[query]);
-  return <main className="guide-browser">
+  return <AppContentContainer as="main" className="guide-browser">
     <h1>사용 가이드</h1>
     <div className="guide-search"><Search size={20}/><input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="가이드 검색" aria-label="가이드 검색"/>{query&&<button type="button" aria-label="검색 지우기" onClick={()=>setQuery("")}><X size={17}/></button>}</div>
     <div className="guide-cards">{filtered.map(guide=>{
@@ -29,5 +30,5 @@ export function GuideBrowser(){
       </Link>;
     })}</div>
     {filtered.length===0&&<div className="guide-no-results"><p>검색 결과 없음</p><button type="button" onClick={()=>setQuery("")}>전체 보기</button></div>}
-  </main>;
+  </AppContentContainer>;
 }

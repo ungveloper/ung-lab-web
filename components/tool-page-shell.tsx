@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Menu, Search } from "lucide-react";
+import { ArrowLeft, Menu } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import type { Tool } from "@/lib/tools";
 import { readToolReturn, saveToolReturn } from "@/lib/recent-tools-state.mjs";
@@ -30,7 +30,6 @@ export function ToolPageShell({ slug, title, catalog, children }: Props) {
         <button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={() => setMobileOpen(true)}><Menu size={22}/></button>
         <button type="button" className="tool-app-back" onClick={goBack}><ArrowLeft size={18}/><span>이전 화면으로</span></button>
         <span className="tool-app-top-title" title={title}>{title}</span>
-        <button type="button" className="chat-browse-button" onClick={() => router.push("/?view=all")}><Search size={16}/><span>모든 기능 보기</span></button>
       </header>
       <div className="tool-page-scroll">{children}</div>
     </div>

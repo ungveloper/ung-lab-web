@@ -2,7 +2,7 @@
 
 import {useState,type ReactNode} from "react";
 import Link from "next/link";
-import {BookOpen, Menu, Search} from "lucide-react";
+import {BookOpen, Menu} from "lucide-react";
 import {AppSidebar} from "@/components/app-sidebar";
 
 export function GuideShell({children}:{children:ReactNode}){
@@ -14,7 +14,6 @@ export function GuideShell({children}:{children:ReactNode}){
       <header className="chat-topbar guide-topbar">
         <button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setMobileOpen(true)}><Menu size={22}/></button>
         <Link href="/guides" className="guide-top-title"><BookOpen size={18}/> 사용 가이드</Link>
-        <Link href="/?view=all" className="chat-browse-button"><Search size={16}/><span>모든 기능 보기</span></Link>
       </header>
       <div className="guide-page-scroll">{children}</div>
     </div>

@@ -2,12 +2,13 @@
 
 import {useEffect,useRef,useState,type FormEvent,type KeyboardEvent,type MouseEvent} from "react";
 import Link from "next/link";
-import {ArrowRight,ChevronLeft,Menu,Send,Search} from "lucide-react";
+import {ArrowRight,ChevronLeft,Menu,Send} from "lucide-react";
 import {tools,type Tool} from "@/lib/tools";
 import {ToolIcon} from "@/components/tool-icon";
 import {ToolExplorer} from "@/components/tool-explorer";
 import {FavoriteButton} from "@/components/favorite-button";
 import {AppSidebar} from "@/components/app-sidebar";
+import {AppContentContainer} from "@/components/app-content-container";
 import {saveToolReturn} from "@/lib/recent-tools-state.mjs";
 import {recommendTools} from "@/lib/tool-matcher.mjs";
 import {suggestFallbackTools,popularitySlugs} from "@/lib/tool-fallback.mjs";
@@ -93,19 +94,19 @@ export function ToolChatHome(){
   return <div className={`chat-home${sidebarCollapsed?" chat-home--compact":""}`} onClickCapture={captureToolNavigation}>
     <AppSidebar mode={mode} catalog={catalog} mobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} onNewChat={newChat} onBrowse={showBrowse}/>
     <div className="chat-main">
-      <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button><button type="button" className="chat-browse-button" onClick={showBrowse}><Search size={16}/> 모든 기능 보기</button></header>
-      {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1></div><ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(t=>t.slug))}/></main>:
+      <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button></header>
+      {mode==="browse"?<main className="chat-browse-page"><AppContentContainer className="chat-browse-content"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1></div><ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(t=>t.slug))}/></AppContentContainer></main>:
       <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화">
-        {messages.length===0?<div className="chat-empty-center">
+        {messages.length===0?<AppContentContainer className="chat-empty-center">
           <div className="chat-welcome"><h1>어떤 작업을 도와드릴까요?</h1></div>
-          <div className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form></div>
+          <AppContentContainer className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form></AppContentContainer>
           <div className="chat-examples" aria-label="추천 질문">{exampleQueries.map(q=><button type="button" key={q} onClick={()=>submit(q)}>{q}<ArrowRight size={14}/></button>)}</div>
-        </div>:<>
-          <div className="chat-messages"><div className="chat-thread">{messages.map(m=><div key={m.id} className={`chat-message chat-message--${m.kind}`}>{m.kind==="assistant"&&<span className="chat-assistant-avatar" aria-hidden="true">✧</span>}<div className="chat-message-body"><p>{m.text}</p>{m.kind==="assistant"&&m.slugs&&m.slugs.length>0&&<div className="chat-result-grid">{m.slugs.map(slug=>{const tool=selectedCatalog.get(slug)??tools.find(t=>t.slug===slug);return tool?<div className="chat-result-card" key={slug}>
+        </AppContentContainer>:<>
+          <div className="chat-messages"><AppContentContainer className="chat-thread">{messages.map(m=><div key={m.id} className={`chat-message chat-message--${m.kind}`}>{m.kind==="assistant"&&<span className="chat-assistant-avatar" aria-hidden="true">✧</span>}<div className="chat-message-body"><p>{m.text}</p>{m.kind==="assistant"&&m.slugs&&m.slugs.length>0&&<div className="chat-result-grid">{m.slugs.map(slug=>{const tool=selectedCatalog.get(slug)??tools.find(t=>t.slug===slug);return tool?<div className="chat-result-card" key={slug}>
               <FavoriteButton slug={tool.slug} title={tool.title} variant="compact"/>
               <Link href={`/tools/${tool.slug}`} aria-label={`${tool.title} 도구 열기`}><span className={`tool-icon icon-${tool.category}`}><ToolIcon name={tool.icon} size={22}/></span><span className="chat-result-copy"><strong>{tool.title}</strong><small>{tool.subtitle}</small><span className="chat-result-tags">{tool.tags.slice(0,3).join(" · ")}</span></span><span className="chat-result-open" aria-hidden="true"><ArrowRight size={18}/></span></Link>
-            </div>:null})}</div>}</div></div>)}</div><div ref={bottomRef}/></div>
-          <div className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form>{source==="unavailable"&&<span className="sr-only" role="status">기본 도구 목록 사용 중</span>}</div>
+            </div>:null})}</div>}</div></div>)}</AppContentContainer><div ref={bottomRef}/></div>
+          <AppContentContainer className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form>{source==="unavailable"&&<span className="sr-only" role="status">기본 도구 목록 사용 중</span>}</AppContentContainer>
         </>}
       </main>}
     </div>

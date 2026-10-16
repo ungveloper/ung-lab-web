@@ -29,5 +29,5 @@ test('textarea 내용이 많아질 때 자동 높이를 계산하고 드래그 �
 test('모든 기능 보기 하단 여백을 데스크톱과 모바일에 확보한다',()=>{
   const css=src('app/chat.css');
   assert.match(css,/\.chat-browse-page\{[^}]*140px/);
-  assert.match(css,/\.chat-browse-page\{padding:17px 16px 110px/);
+  assert.match(css,/\.chat-browse-page\{padding:17px 0 110px/);
 });
