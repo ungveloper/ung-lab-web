@@ -16,6 +16,13 @@ Mac 다운로드 폴더에서 ZIP을 풀고 `bash ~/Downloads/ung-lab-chat-supab
 
 DB 테이블은 읽기 전용 RLS이며 공개 사용자는 **active 도구 메타데이터 SELECT만 가능**합니다. 쓰기 권한은 부여하지 않습니다. 도구 파일은 업로드되지 않고, 질문은 JavaScript로 브라우저에서 분석하며 외부 AI로 전송되지 않습니다. 채팅 내용과 별표는 브라우저 탭의 `sessionStorage`에만 남습니다. 사이트 운영자는 공개 DB 메타데이터만 관리합니다.
 
+## 선택 사항: 최근 사용량 기반 인기 도구
+
+1. Supabase SQL Editor에서 `supabase/003_tool_popularity.sql` 실행 (기존 001/002 완료 후).
+2. Supabase 서버의 **Secret API key (`sb_secret_...`)**를 발급하여 `.env.local` 및 Vercel 서버 환경변수에 `SUPABASE_ANALYTICS_SECRET_KEY`로 등록. **절대로 브라우저, `NEXT_PUBLIC_` 변수, Git 커밋에 공개하지 마세요.** 앞선 설명에서 금지한 공개 영역의 Secret 사용과는 다릅니다.
+3. 서버 재시작 후 `/api/tool-popularity`를 조회하면 `source: "supabase"`, `counts` 결과가 표시됩니다. DB/비밀키 설정 전에는 기록하지 않고 추천 도구만 사용합니다.
+4. 도구 상세 페이지에 실제 진입할 때 브라우저 세션당 각 도구 1회만 카운트합니다. DB에는 날짜별 합계만 저장합니다. 채팅·파일·사용자 신원·IP를 저장하지 않습니다. 이는 고유 이용자 수가 아니라 **대략적인 세션별 도구 방문 수**입니다. 집계 호출은 남용될 수 있으므로 트래픽 증가 시 서버 레이트리밋·봇 방어를 추가하세요.
+
 ## 3. 구현 내용
 
 - 홈 화면: ChatGPT와 유사한 대화형 구조(독자 브랜드): 사이드바, 새 대화, 추천 카드, 예시 질문, 하단 입력창, 모바일 햄버거 메뉴.

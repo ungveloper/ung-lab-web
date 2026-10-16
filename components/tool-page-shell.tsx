@@ -7,13 +7,14 @@ import { AppSidebar } from "@/components/app-sidebar";
 import type { Tool } from "@/lib/tools";
 import { readToolReturn, saveToolReturn } from "@/lib/recent-tools-state.mjs";
 import { visitRecentTool } from "@/lib/use-recent-tools";
+import { recordToolVisit } from "@/lib/tool-popularity-client";
 
 type Props = { slug: string; title: string; catalog: Tool[]; children: ReactNode };
 export function ToolPageShell({ slug, title, catalog, children }: Props) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  useEffect(() => { visitRecentTool(slug); }, [slug]);
+  useEffect(() => { visitRecentTool(slug); void recordToolVisit(slug); }, [slug]);
   function captureToolNavigation(event: MouseEvent<HTMLDivElement>) {
     const target = event.target;
     if (!(target instanceof Element)) return;

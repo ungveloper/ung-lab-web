@@ -5,7 +5,7 @@ import { ArrowRight, Clock3, FlaskConical, Menu, MessageCirclePlus, PanelLeftClo
 import { tools, type Tool } from "@/lib/tools";
 import { ToolIcon } from "@/components/tool-icon";
 import { useFavorites } from "@/lib/use-favorites";
-import { useRecentTools } from "@/lib/use-recent-tools";
+import { useRecentTools, removeRecentTool, clearRecentTools } from "@/lib/use-recent-tools";
 
 type Props = {
   mode: "chat" | "browse" | "tool";
@@ -53,7 +53,11 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
           <p><Star size={14} fill="currentColor"/> 즐겨찾는 도구</p>{toolLinks(favoriteIds)}
         </section>}
         {recentIds.length > 0 && <section className="chat-sidebar-recent" aria-label="최근 사용한 도구">
-          <p><Clock3 size={14}/> 최근 사용한 도구</p>{toolLinks(recentIds)}
+          <p><Clock3 size={14}/> 최근 사용한 도구 <button type="button" className="chat-recent-clear" onClick={clearRecentTools}>전체 지우기</button></p>
+          {recentIds.map(slug=>{const item=catalogMap.get(slug);return item?<div className="chat-recent-row" key={slug}>
+            <Link href={`/tools/${slug}`} className={slug===activeToolSlug?"is-selected":""} aria-current={slug===activeToolSlug?"page":undefined} onClick={close} title={item.title}><ToolIcon name={item.icon} size={17}/><span>{item.title}</span></Link>
+            <button type="button" className="chat-recent-remove" aria-label={`${item.title} 최근 목록에서 제거`} title="목록에서 제거" onClick={()=>removeRecentTool(slug)}><X size={15}/></button>
+          </div>:null})}
         </section>}
       </div>
       <div className="chat-sidebar-bottom"><Link href="/guides" onClick={close}>사용 가이드 <ArrowRight size={13}/></Link></div>

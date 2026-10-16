@@ -25,12 +25,14 @@ function ToolCard({tool, onTag, activeTags}:{tool:Tool,onTag:(tag:string)=>void,
 }
 
 /** Former home explorer, retained behind "모든 기능 보기" with updated filtering. */
-export function ToolExplorer({catalog}:{catalog:Tool[]}){
+export function ToolExplorer({catalog,popularSlugs=[]}:{catalog:Tool[];popularSlugs?:string[]}){
   const [query,setQuery]=useState("");
   const [category,setCategory]=useState("all");
   const [tags,setTags]=useState<string[]>([]);
   const {favoriteIds}=useFavorites();
   const favoriteTools=favoriteIds.flatMap(slug=>{const tool=catalog.find(item=>item.slug===slug);return tool?[tool]:[]});
+  const actualPopular=popularSlugs.flatMap(slug=>{const tool=catalog.find(item=>item.slug===slug);return tool?[tool]:[]});
+  const featuredTools=actualPopular.length?actualPopular:catalog.filter(t=>t.featured);
   const filtered=useMemo(()=>catalog.filter(tool=>{
     const input=query.trim().toLocaleLowerCase("ko").replace(/\s/g,"");
     const searchable=[tool.title,tool.subtitle,tool.formats,...tool.tags,...tool.aliases].join(" ").toLocaleLowerCase("ko").replace(/\s/g,"");
@@ -41,7 +43,7 @@ export function ToolExplorer({catalog}:{catalog:Tool[]}){
     <div className="search-container"><Search size={20}/><input value={query} onChange={e=>setQuery(e.target.value)} aria-label="도구 검색" placeholder="도구명, 파일 형식, 태그로 검색"/>{query&&<button type="button" aria-label="검색어 지우기" onClick={()=>setQuery("")}><X size={17}/></button>}</div>
     {favoriteTools.length>0&&<section className="favorites-section" aria-labelledby="favorites-title"><div className="section-title"><div><span className="eyebrow"><Star size={14} fill="currentColor"/> YOUR FAVORITES</span><h2 id="favorites-title">즐겨찾는 도구 <em>{favoriteTools.length}</em></h2></div></div><div className="tools-grid">{favoriteTools.map(t=><ToolCard key={t.slug} tool={t} onTag={onTag} activeTags={tags}/>)}</div></section>}
     <div className="filter-area"><div className="filter-top"><strong>카테고리</strong></div><div className="tabs" role="group" aria-label="카테고리 필터">{[{id:"all",name:"전체 도구"},...Object.entries(categories).map(([id,value])=>({id,name:value.name}))].map(c=><button type="button" key={c.id} aria-pressed={category===c.id} className={category===c.id?"selected":""} onClick={()=>setCategory(c.id)}>{c.name}</button>)}</div><div className="tag-row"><span>빠른 필터</span>{commonTags.map(tag=><button type="button" key={tag} className={tags.includes(tag)?"tag-active":""} aria-pressed={tags.includes(tag)} onClick={()=>onTag(tag)}>{tag}</button>)}{(query||category!=="all"||tags.length>0)&&<button type="button" className="clear-btn" onClick={()=>{setQuery("");setCategory("all");setTags([])}}><X size={13}/>초기화</button>}</div></div>
-    {!query&&!tags.length&&category==="all"&&<section className="featured"><div className="section-title"><div><span className="eyebrow"><Flame size={14}/> POPULAR TOOLS</span><h2>많이 찾는 도구</h2></div></div><div className="tools-grid">{catalog.filter(t=>t.featured).map(t=><ToolCard key={t.slug} tool={t} onTag={onTag} activeTags={tags}/>)}</div></section>}
+    {!query&&!tags.length&&category==="all"&&<section className="featured"><div className="section-title"><div><span className="eyebrow"><Flame size={14}/>{actualPopular.length?" POPULAR TOOLS":" TOOLS"}</span><h2>{actualPopular.length?"많이 사용한 도구":"추천 도구"}</h2></div></div><div className="tools-grid">{featuredTools.map(t=><ToolCard key={t.slug} tool={t} onTag={onTag} activeTags={tags}/>)}</div></section>}
     <section><div className="section-title"><div><h2>{query||tags.length||category!=="all"?"검색 결과":"모든 온라인 도구"} <em>{filtered.length}</em></h2></div></div>{filtered.length?<div className="tools-grid">{filtered.map(t=><ToolCard key={t.slug} tool={t} onTag={onTag} activeTags={tags}/>)}</div>:<div className="empty-result"><Search size={30}/><h3>조건에 맞는 도구가 없습니다.</h3><button type="button" className="btn btn-light" onClick={()=>{setQuery("");setCategory("all");setTags([])}}>전체 보기</button></div>}</section>
   </section>
 }

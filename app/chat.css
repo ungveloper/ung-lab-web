@@ -68,3 +68,16 @@ body:has(.tool-app-shell){background:#fff}
 @media(prefers-reduced-motion:reduce){.tool-app-loading-spinner{animation-duration:2s}}
 
 body:has(.tool-app-loading) .site-header,body:has(.tool-app-loading) .site-footer{display:none}
+
+/* Session history actions: link and removal always occupy separate tap targets. */
+.chat-sidebar-recent>p{justify-content:space-between;gap:6px}
+.chat-recent-clear{margin-left:auto;border:0;background:transparent;color:#79859b;padding:5px;font-size:11px!important;white-space:nowrap;border-radius:6px}
+.chat-recent-clear:hover{color:#b42332;background:#fff0f1}
+.chat-recent-row{display:flex;align-items:center;gap:1px;min-width:0;border-radius:8px}
+.chat-recent-row>a{min-width:0;flex:1;display:flex;align-items:center;gap:10px;padding:9px 5px 9px 9px;color:#5b6371;font-size:13px;white-space:nowrap;border-radius:8px}
+.chat-recent-row>a>span{overflow:hidden;text-overflow:ellipsis}
+.chat-recent-row>a>svg{flex-shrink:0}
+.chat-recent-row>a:hover,.chat-recent-row>a.is-selected{background:#ededf1;color:#283448}
+.chat-recent-remove{display:grid;place-items:center;width:30px;height:34px;flex-shrink:0;border:0;background:transparent;border-radius:7px;color:#9aa4b4}
+.chat-recent-remove:hover,.chat-recent-remove:focus-visible{color:#b42332;background:#fce8e9}
+@media(max-width:720px){.chat-recent-remove{width:38px;height:40px}.chat-recent-clear{padding:8px}}

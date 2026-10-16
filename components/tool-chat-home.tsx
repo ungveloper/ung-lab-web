@@ -10,6 +10,7 @@ import {FavoriteButton} from "@/components/favorite-button";
 import {AppSidebar} from "@/components/app-sidebar";
 import {saveToolReturn} from "@/lib/recent-tools-state.mjs";
 import {recommendTools} from "@/lib/tool-matcher.mjs";
+import {suggestFallbackTools,popularitySlugs} from "@/lib/tool-fallback.mjs";
 
 type ChatMessage={id:number;kind:"user"|"assistant";text:string;slugs?:string[]};
 type CatalogResponse={tools:Tool[];source:"supabase"|"setup-required"|"unavailable"};
@@ -22,6 +23,7 @@ function loadTranscript():ChatMessage[]{
 }
 export function ToolChatHome(){
   const [catalog,setCatalog]=useState<Tool[]>(tools);
+  const [popularity,setPopularity]=useState<Record<string,number>>({});
   const [source,setSource]=useState<CatalogResponse["source"]>("setup-required");
   const [mode,setMode]=useState<"chat"|"browse">("chat");
   const [sidebarOpen,setSidebarOpen]=useState(false);
@@ -33,6 +35,13 @@ export function ToolChatHome(){
   useEffect(()=>{let cancelled=false;const controller=new AbortController();
     fetch("/api/tool-catalog",{cache:"no-store",signal:controller.signal}).then(async r=>{if(!r.ok)throw new Error("Catalog HTTP error");return await r.json() as CatalogResponse}).then(data=>{if(!cancelled&&Array.isArray(data.tools)){setCatalog(data.tools);setSource(data.source)}}).catch(()=>{if(!cancelled)setSource("unavailable")});
     return ()=>{cancelled=true;controller.abort()};
+  },[]);
+  useEffect(()=>{let alive=true;const controller=new AbortController();
+    fetch("/api/tool-popularity",{signal:controller.signal,cache:"no-store"})
+      .then(async response=>response.ok?await response.json() as {source:string;counts:Record<string,number>}:null)
+      .then(result=>{if(alive&&result?.source==="supabase"&&result.counts)setPopularity(result.counts)})
+      .catch(()=>{});
+    return ()=>{alive=false;controller.abort()};
   },[]);
   useEffect(()=>{if(new URLSearchParams(window.location.search).get("view")==="all")queueMicrotask(()=>setMode("browse"));},[]);
   useEffect(()=>{const restored=loadTranscript();if(restored.length)queueMicrotask(()=>setMessages(restored));},[]);
@@ -49,11 +58,14 @@ export function ToolChatHome(){
   },[draft,mode]);
   function submit(value?:string){const text=(value??draft).trim().slice(0,500);if(!text)return;
     const {results,reason}=recommendTools(text,catalog);
-    const answer=results.length?"추천 도구":reason??"일치하는 도구가 없습니다.";
+    const alternatives=results.length?null:suggestFallbackTools(text,catalog,popularity);
+    const shown=results.length?results:(alternatives?.tools??[]);
+    const label=results.length?"추천 도구":(alternatives?.label??"추천 도구");
+    const answer=reason?.startsWith("현재 ")?`${reason} · ${label}`:label;
     // Pure, deterministic IDs: React can re-run this updater during rendering.
     setMessages(prev=>{
       const id=prev.reduce((max,message)=>Math.max(max,message.id),0)+1;
-      return [...prev,{id,kind:"user" as const,text},{id:id+1,kind:"assistant" as const,text:answer,slugs:results.map(t=>t.slug)}].slice(-40);
+      return [...prev,{id,kind:"user" as const,text},{id:id+1,kind:"assistant" as const,text:answer,slugs:shown.map(t=>t.slug)}].slice(-40);
     });
     setDraft("");setMode("chat");setSidebarOpen(false);
   }
@@ -73,7 +85,7 @@ export function ToolChatHome(){
     <AppSidebar mode={mode} catalog={catalog} mobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} onNewChat={newChat} onBrowse={showBrowse}/>
     <div className="chat-main">
       <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button><button type="button" className="chat-browse-button" onClick={showBrowse}><Search size={16}/> 모든 기능 보기</button></header>
-      {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1></div><ToolExplorer catalog={catalog}/></main>:
+      {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1></div><ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(t=>t.slug))}/></main>:
       <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화">
         <div className="chat-messages">
           {messages.length===0?<div className="chat-welcome"><span className="chat-welcome-logo"><FlaskConical size={30}/></span><h1>어떤 작업을 도와드릴까요?</h1><div className="chat-examples">{exampleQueries.map(q=><button type="button" key={q} onClick={()=>submit(q)}>{q} <ArrowRight size={14}/></button>)}</div></div>:
