@@ -34,8 +34,9 @@ test('카드 왼쪽 별표 오른쪽 화살표가 독립된 클릭 표면을 가
   assert.ok(jsx.indexOf('<FavoriteButton slug={tool.slug}')<jsx.indexOf('<Link href={`/tools/${tool.slug}`} aria-label='));
 });
 test('가이드 목록, 상세 모두 사이드바 공유, 3열 및 검색',()=>{
-  assert.match(src('app/guides/page.tsx'),/<GuideShell><GuideBrowser\/>/);
-  assert.match(src('app/guides/[slug]/page.tsx'),/<GuideShell>/);
+  assert.match(src('app/guides/layout.tsx'),/<GuideShell>\{children\}<\/GuideShell>/);
+  assert.match(src('app/guides/page.tsx'),/<GuideBrowser\/>/);
+  assert.doesNotMatch(src('app/guides/[slug]/page.tsx'),/<GuideShell>/);
   assert.match(src('components/guide-browser.tsx'),/type="search"/);
   assert.match(src('components/guide-shell.tsx'),/<AppListShell mode="guides"/);
   assert.match(src('components/app-list-shell.tsx'),/<AppSidebar mode={mode}/);
