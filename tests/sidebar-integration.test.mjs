@@ -21,7 +21,8 @@ test("도구 상세 URL에 직접 접속한 경우에도 이전 화면으로 이
   assert.match(src, /readToolReturn\(slug\)/);
   assert.match(src, /이전 화면으로/);
   assert.match(src, /visitRecentTool\(slug\)/);
-  assert.match(read("components/tool-chat-home.tsx"), /view=all/);
+  assert.match(read("components/tool-chat-home.tsx"), /get\("view"\)==="all"/);
+  assert.match(read("components/tool-browse-page.tsx"), /saveToolReturn\(slug,"\/tools"\)/);
 });
 test("공유 사이드바 CSS가 홈과 상세 화면에 모두 제공된다", () => {
   assert.match(read("app/layout.tsx"), /import "\.\/chat\.css"/);

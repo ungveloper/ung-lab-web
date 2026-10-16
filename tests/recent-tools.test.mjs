@@ -20,7 +20,8 @@ test("방문 시 최상단 이동, 중복 제거, 최신 최대 8개 보존", ()
 });
 test("뒤로가기 주소는 도메인 밖으로 벗어나지 않고 현재 도구로 재이동하지 않는다", () => {
   assert.equal(safeReturnTarget("image-compressor", "/"), "/");
-  assert.equal(safeReturnTarget("image-compressor", "/?view=all"), "/?view=all");
+  assert.equal(safeReturnTarget("image-compressor", "/tools"), "/tools");
+  assert.equal(safeReturnTarget("image-compressor", "/?view=all"), "/tools");
   assert.equal(safeReturnTarget("image-compressor", "/tools/image-cropper"), "/tools/image-cropper");
   assert.equal(safeReturnTarget("image-compressor", "/tools/image-compressor"), null);
   assert.equal(safeReturnTarget("image-compressor", "https://other.example"), null);
@@ -35,7 +36,7 @@ test("여러 도구의 복귀 위치를 각각 보존하여 도구 간 이동도
     saveToolReturn("image-compressor", "/?view=all");
     saveToolReturn("image-cropper", "/tools/image-compressor");
     assert.equal(readToolReturn("image-cropper"), "/tools/image-compressor");
-    assert.equal(readToolReturn("image-compressor"), "/?view=all");
+    assert.equal(readToolReturn("image-compressor"), "/tools");
     assert.equal(readToolReturn("pdf-to-image"), "/");
     assert.equal(typeof values.get(TOOL_RETURN_KEY), "string");
     saveToolReturn("image-cropper", "https://evil.example");

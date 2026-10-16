@@ -141,3 +141,7 @@ body:has(.guides-app-shell) .site-header,body:has(.guides-app-shell) .site-foote
 .app-content-container{--app-content-max-width:1040px;width:min(var(--app-content-max-width),calc(100% - 48px));max-width:var(--app-content-max-width);margin-inline:auto;min-width:0}
 .chat-empty-center .chat-composer-area.app-content-container{width:100%;max-width:none}
 @media(max-width:720px){.app-content-container{width:calc(100% - 32px)}}
+
+/* The all-tools directory is now its own route, sharing the guide/page shell. */
+.tools-app-shell .chat-browse-page{min-height:100%;overflow:visible}
+.tools-app-shell .chat-browse-content{padding-top:0}

@@ -37,7 +37,8 @@ test('가이드 목록, 상세 모두 사이드바 공유, 3열 및 검색',()=>
   assert.match(src('app/guides/page.tsx'),/<GuideShell><GuideBrowser\/>/);
   assert.match(src('app/guides/[slug]/page.tsx'),/<GuideShell>/);
   assert.match(src('components/guide-browser.tsx'),/type="search"/);
-  assert.match(src('components/guide-shell.tsx'),/<AppSidebar mode="guides"/);
+  assert.match(src('components/guide-shell.tsx'),/<AppListShell mode="guides"/);
+  assert.match(src('components/app-list-shell.tsx'),/<AppSidebar mode={mode}/);
   assert.match(src('app/chat.css'),/\.guide-cards\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 });
 test('도구별 질문 유형만 서버에 전달하고 원문을 DB에 남기지 않는다',()=>{

@@ -16,10 +16,9 @@ type Props = {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
   onNewChat?: () => void;
-  onBrowse?: () => void;
 };
 
-export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, setMobileOpen, collapsed, setCollapsed, onNewChat, onBrowse }: Props) {
+export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, setMobileOpen, collapsed, setCollapsed, onNewChat }: Props) {
   const { favoriteIds } = useFavorites();
   const recentIds = useRecentTools();
   const catalogMap = new Map([...tools, ...catalog].map((tool) => [tool.slug, tool]));
@@ -45,8 +44,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
       <nav className="chat-side-nav" aria-label="채팅 및 도구">
         {onNewChat ? <button type="button" className={`chat-side-link${mode === "chat" ? " is-selected" : ""}`} onClick={() => { onNewChat(); close(); }}><MessageCirclePlus size={19}/><span>새 대화</span></button> :
           <Link href="/" className="chat-side-link" onClick={clearChat}><MessageCirclePlus size={19}/><span>새 대화</span></Link>}
-        {onBrowse ? <button type="button" className={`chat-side-link${mode === "browse" ? " is-selected" : ""}`} onClick={() => { onBrowse(); close(); }}><Menu size={19}/><span>모든 기능 보기</span></button> :
-          <Link href="/?view=all" className="chat-side-link" onClick={close}><Menu size={19}/><span>모든 기능 보기</span></Link>}
+        <Link href="/tools" className={`chat-side-link${mode === "browse" ? " is-selected" : ""}`} aria-current={mode === "browse" ? "page" : undefined} onClick={close}><Menu size={19}/><span>모든 기능 보기</span></Link>
         <Link href="/guides" className={`chat-side-link${mode==="guides"?" is-selected":""}`} onClick={close}><BookOpen size={19}/><span>사용 가이드</span></Link>
       </nav>
       <div className="chat-sidebar-scroll">
