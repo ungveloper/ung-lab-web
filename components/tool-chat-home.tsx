@@ -36,7 +36,16 @@ export function ToolChatHome(){
   },[]);
   useEffect(()=>{const restored=loadTranscript();if(restored.length)queueMicrotask(()=>setMessages(restored));},[]);
   useEffect(()=>{if(!messages.length)return;try{window.sessionStorage.setItem(transcriptKey,JSON.stringify(messages.slice(-40)))}catch{/* Private browsing: conversation still works. */}},[messages]);
-  useEffect(()=>{bottomRef.current?.scrollIntoView({block:"end",behavior:"auto"})},[messages,mode]);
+  useEffect(()=>{if(messages.length>0&&mode==="chat")bottomRef.current?.scrollIntoView({block:"end",behavior:"auto"})},[messages,mode]);
+  // Grow with input (including pasted/newline text), then scroll only beyond 160px.
+  useEffect(()=>{
+    const field=inputRef.current;
+    if(!field)return;
+    field.style.height="auto";
+    const fullHeight=field.scrollHeight;
+    field.style.height=`${Math.min(fullHeight,160)}px`;
+    field.style.overflowY=fullHeight>160?"auto":"hidden";
+  },[draft,mode]);
   function submit(value?:string){const text=(value??draft).trim().slice(0,500);if(!text)return;
     const {results,reason}=recommendTools(text,catalog);
     const answer=results.length?`말씀하신 작업에는 ${results[0].title}${results.length>1?" 등 다음 도구":" 도구"}가 적합합니다. 원하는 도구를 선택해 바로 사용하세요.`:reason??"해당 도구를 찾지 못했습니다.";
@@ -66,7 +75,7 @@ export function ToolChatHome(){
     <div className="chat-main">
       <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button><button type="button" className="chat-browse-button" onClick={showBrowse}><Search size={16}/> 모든 기능 보기</button></header>
       {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1><p>카테고리와 태그를 선택하거나 이름으로 검색하세요.</p></div><ToolExplorer catalog={catalog}/></main>:
-      <main className="chat-conversation" aria-label="도구 찾기 대화">
+      <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화">
         <div className="chat-messages">
           {messages.length===0?<div className="chat-welcome"><span className="chat-welcome-logo"><FlaskConical size={30}/></span><h1>어떤 작업을 도와드릴까요?</h1><p>하고 싶은 작업을 평소 말하듯 입력하면 알맞은 도구를 찾아드립니다.</p><div className="chat-examples">{exampleQueries.map(q=><button type="button" key={q} onClick={()=>submit(q)}>{q} <ArrowRight size={14}/></button>)}</div></div>:
           <div className="chat-thread">{messages.map(m=><div key={m.id} className={`chat-message chat-message--${m.kind}`}>{m.kind==="assistant"&&<span className="chat-assistant-avatar"><FlaskConical size={17}/></span>}<div className="chat-message-body"><p>{m.text}</p>{m.kind==="assistant"&&m.slugs&&m.slugs.length>0&&<div className="chat-result-grid">{m.slugs.map(slug=>{const tool=selectedCatalog.get(slug)??tools.find(t=>t.slug===slug);return tool?<div className="chat-result-card" key={slug}><Link href={`/tools/${tool.slug}`} aria-label={`${tool.title} 도구 열기`}><span className={`tool-icon icon-${tool.category}`}><ToolIcon name={tool.icon} size={22}/></span><span className="chat-result-copy"><strong>{tool.title}</strong><small>{tool.subtitle}</small><span className="chat-result-tags">{tool.tags.slice(0,3).join(" · ")}</span></span><ArrowRight size={17} className="chat-result-arrow"/></Link><FavoriteButton slug={tool.slug} title={tool.title} variant="compact"/></div>:null})}</div>}</div></div>)}</div>}
