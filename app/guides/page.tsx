@@ -1,1 +1,5 @@
-import Link from "next/link";import {guides} from "@/lib/guides";export const metadata={title:"사용 가이드",description:"PDF, 이미지, 문서 온라인 도구를 사용하는 방법과 문제 해결 방법"};export default function Page(){return <main className="content-page"><h1>도구 사용 가이드</h1><p>직접 사용할 수 있는 온라인 도구와 함께 자주 하는 작업을 쉽게 설명합니다.</p><div className="guide-grid">{guides.map(g=><Link className="guide-card" href={`/guides/${g.slug}`} key={g.slug}><h3>{g.title} →</h3><p>{g.steps[0]}</p></Link>)}</div></main>}
+import {GuideShell} from "@/components/guide-shell";
+import {GuideBrowser} from "@/components/guide-browser";
+
+export const metadata={title:"사용 가이드",description:"웅이연구소의 도구별 사용 가이드"};
+export default function Page(){return <GuideShell><GuideBrowser/></GuideShell>}

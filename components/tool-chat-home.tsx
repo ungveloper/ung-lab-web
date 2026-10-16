@@ -2,7 +2,7 @@
 
 import {useEffect,useRef,useState,type FormEvent,type KeyboardEvent,type MouseEvent} from "react";
 import Link from "next/link";
-import {ArrowRight,ChevronLeft,FlaskConical,Menu,Send,Search} from "lucide-react";
+import {ArrowRight,ChevronLeft,Menu,Send,Search} from "lucide-react";
 import {tools,type Tool} from "@/lib/tools";
 import {ToolIcon} from "@/components/tool-icon";
 import {ToolExplorer} from "@/components/tool-explorer";
@@ -14,7 +14,7 @@ import {suggestFallbackTools,popularitySlugs} from "@/lib/tool-fallback.mjs";
 
 type ChatMessage={id:number;kind:"user"|"assistant";text:string;slugs?:string[]};
 type CatalogResponse={tools:Tool[];source:"supabase"|"setup-required"|"unavailable"};
-const exampleQueries=["사진 배경을 투명하게 만들어줘","PDF를 이미지로 저장하고 싶어","WebP 파일을 PNG로 바꿔줘","엑셀 파일을 열어보고 싶어"];
+const defaultQueries=["사진 배경을 투명하게 만들어줘","PDF를 이미지로 저장하고 싶어","WebP 파일을 PNG로 바꿔줘","엑셀 파일을 열어보고 싶어"];
 const transcriptKey="ung-lab:tool-chat:v1";
 function loadTranscript():ChatMessage[]{
   try{const raw=window.sessionStorage.getItem(transcriptKey);const parsed:unknown=raw?JSON.parse(raw):[];if(!Array.isArray(parsed))return [];
@@ -24,6 +24,7 @@ function loadTranscript():ChatMessage[]{
 export function ToolChatHome(){
   const [catalog,setCatalog]=useState<Tool[]>(tools);
   const [popularity,setPopularity]=useState<Record<string,number>>({});
+  const [exampleQueries,setExampleQueries]=useState<string[]>(defaultQueries);
   const [source,setSource]=useState<CatalogResponse["source"]>("setup-required");
   const [mode,setMode]=useState<"chat"|"browse">("chat");
   const [sidebarOpen,setSidebarOpen]=useState(false);
@@ -43,6 +44,13 @@ export function ToolChatHome(){
       .catch(()=>{});
     return ()=>{alive=false;controller.abort()};
   },[]);
+  useEffect(()=>{let alive=true;const controller=new AbortController();
+    fetch("/api/tool-prompts",{signal:controller.signal,cache:"no-store"})
+      .then(async response=>response.ok?await response.json() as {questions?:string[]}:null)
+      .then(data=>{if(alive&&Array.isArray(data?.questions)&&data.questions.every(item=>typeof item==="string")&&data.questions.length<=4)setExampleQueries(data.questions)})
+      .catch(()=>{});
+    return ()=>{alive=false;controller.abort()};
+  },[]);
   useEffect(()=>{if(new URLSearchParams(window.location.search).get("view")==="all")queueMicrotask(()=>setMode("browse"));},[]);
   useEffect(()=>{const restored=loadTranscript();if(restored.length)queueMicrotask(()=>setMessages(restored));},[]);
   useEffect(()=>{if(!messages.length)return;try{window.sessionStorage.setItem(transcriptKey,JSON.stringify(messages.slice(-40)))}catch{/* Private browsing: conversation still works. */}},[messages]);
@@ -58,6 +66,7 @@ export function ToolChatHome(){
   },[draft,mode]);
   function submit(value?:string){const text=(value??draft).trim().slice(0,500);if(!text)return;
     const {results,reason}=recommendTools(text,catalog);
+    if(results.length){void fetch("/api/tool-prompts",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({slug:results[0].slug}),keepalive:true}).catch(()=>{});}
     const alternatives=results.length?null:suggestFallbackTools(text,catalog,popularity);
     const shown=results.length?results:(alternatives?.tools??[]);
     const label=results.length?"추천 도구":(alternatives?.label??"추천 도구");
@@ -87,12 +96,17 @@ export function ToolChatHome(){
       <header className="chat-topbar"><button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setSidebarOpen(true)}><Menu size={22}/></button><button type="button" className="chat-top-title" onClick={()=>setMode("chat")}>웅이연구소 <span>도구 찾기</span></button><button type="button" className="chat-browse-button" onClick={showBrowse}><Search size={16}/> 모든 기능 보기</button></header>
       {mode==="browse"?<main className="chat-browse-page"><div className="chat-browse-heading"><button className="chat-back-button" type="button" onClick={()=>setMode("chat")}><ChevronLeft size={17}/> 대화로 돌아가기</button><h1>모든 기능 보기</h1></div><ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(t=>t.slug))}/></main>:
       <main className={`chat-conversation${messages.length===0?" chat-conversation--empty":""}`} aria-label="도구 찾기 대화">
-        <div className="chat-messages">
-          {messages.length===0?<div className="chat-welcome"><span className="chat-welcome-logo"><FlaskConical size={30}/></span><h1>어떤 작업을 도와드릴까요?</h1><div className="chat-examples">{exampleQueries.map(q=><button type="button" key={q} onClick={()=>submit(q)}>{q} <ArrowRight size={14}/></button>)}</div></div>:
-          <div className="chat-thread">{messages.map(m=><div key={m.id} className={`chat-message chat-message--${m.kind}`}>{m.kind==="assistant"&&<span className="chat-assistant-avatar"><FlaskConical size={17}/></span>}<div className="chat-message-body"><p>{m.text}</p>{m.kind==="assistant"&&m.slugs&&m.slugs.length>0&&<div className="chat-result-grid">{m.slugs.map(slug=>{const tool=selectedCatalog.get(slug)??tools.find(t=>t.slug===slug);return tool?<div className="chat-result-card" key={slug}><Link href={`/tools/${tool.slug}`} aria-label={`${tool.title} 도구 열기`}><span className={`tool-icon icon-${tool.category}`}><ToolIcon name={tool.icon} size={22}/></span><span className="chat-result-copy"><strong>{tool.title}</strong><small>{tool.subtitle}</small><span className="chat-result-tags">{tool.tags.slice(0,3).join(" · ")}</span></span><span className="chat-result-open" aria-hidden="true"><ArrowRight size={18}/></span></Link><FavoriteButton slug={tool.slug} title={tool.title} variant="compact"/></div>:null})}</div>}</div></div>)}</div>}
-          <div ref={bottomRef}/>
-        </div>
-        <div className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form>{source==="unavailable"&&<span className="sr-only" role="status">도구 정보를 연결할 수 없어 기본 도구 목록을 사용합니다.</span>}</div>
+        {messages.length===0?<div className="chat-empty-center">
+          <div className="chat-welcome"><h1>어떤 작업을 도와드릴까요?</h1></div>
+          <div className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form></div>
+          <div className="chat-examples" aria-label="추천 질문">{exampleQueries.map(q=><button type="button" key={q} onClick={()=>submit(q)}>{q}<ArrowRight size={14}/></button>)}</div>
+        </div>:<>
+          <div className="chat-messages"><div className="chat-thread">{messages.map(m=><div key={m.id} className={`chat-message chat-message--${m.kind}`}>{m.kind==="assistant"&&<span className="chat-assistant-avatar" aria-hidden="true">✧</span>}<div className="chat-message-body"><p>{m.text}</p>{m.kind==="assistant"&&m.slugs&&m.slugs.length>0&&<div className="chat-result-grid">{m.slugs.map(slug=>{const tool=selectedCatalog.get(slug)??tools.find(t=>t.slug===slug);return tool?<div className="chat-result-card" key={slug}>
+              <FavoriteButton slug={tool.slug} title={tool.title} variant="compact"/>
+              <Link href={`/tools/${tool.slug}`} aria-label={`${tool.title} 도구 열기`}><span className={`tool-icon icon-${tool.category}`}><ToolIcon name={tool.icon} size={22}/></span><span className="chat-result-copy"><strong>{tool.title}</strong><small>{tool.subtitle}</small><span className="chat-result-tags">{tool.tags.slice(0,3).join(" · ")}</span></span><span className="chat-result-open" aria-hidden="true"><ArrowRight size={18}/></span></Link>
+            </div>:null})}</div>}</div></div>)}</div><div ref={bottomRef}/></div>
+          <div className="chat-composer-area"><form className="chat-composer" onSubmit={onSubmit}><textarea ref={inputRef} value={draft} maxLength={500} rows={1} aria-label="원하는 작업 입력" placeholder="어떤 작업을 하고 싶으신가요?" onKeyDown={keyDown} onChange={e=>setDraft(e.target.value)}/><button type="submit" disabled={!draft.trim()} aria-label="메시지 보내기"><Send size={19}/></button></form>{source==="unavailable"&&<span className="sr-only" role="status">기본 도구 목록 사용 중</span>}</div>
+        </>}
       </main>}
     </div>
   </div>

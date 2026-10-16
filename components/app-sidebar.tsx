@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Clock3, FlaskConical, Menu, MessageCirclePlus, PanelLeftClose, PanelLeftOpen, Star, X } from "lucide-react";
+import { BookOpen, Clock3, FlaskConical, Menu, MessageCirclePlus, PanelLeftClose, PanelLeftOpen, Star, X } from "lucide-react";
 import { tools, type Tool } from "@/lib/tools";
 import { ToolIcon } from "@/components/tool-icon";
 import { useFavorites } from "@/lib/use-favorites";
 import { useRecentTools, removeRecentTool, clearRecentTools } from "@/lib/use-recent-tools";
 
 type Props = {
-  mode: "chat" | "browse" | "tool";
+  mode: "chat" | "browse" | "tool" | "guides";
   catalog?: Tool[];
   activeToolSlug?: string;
   mobileOpen: boolean;
@@ -47,6 +47,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
           <Link href="/" className="chat-side-link" onClick={clearChat}><MessageCirclePlus size={19}/><span>새 대화</span></Link>}
         {onBrowse ? <button type="button" className={`chat-side-link${mode === "browse" ? " is-selected" : ""}`} onClick={() => { onBrowse(); close(); }}><Menu size={19}/><span>모든 기능 보기</span></button> :
           <Link href="/?view=all" className="chat-side-link" onClick={close}><Menu size={19}/><span>모든 기능 보기</span></Link>}
+        <Link href="/guides" className={`chat-side-link${mode==="guides"?" is-selected":""}`} onClick={close}><BookOpen size={19}/><span>사용 가이드</span></Link>
       </nav>
       <div className="chat-sidebar-scroll">
         {favoriteIds.length > 0 && <section className="chat-sidebar-favorites" aria-label="즐겨찾는 도구">
@@ -60,7 +61,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
           </div>:null})}
         </section>}
       </div>
-      <div className="chat-sidebar-bottom"><Link href="/guides" onClick={close}>사용 가이드 <ArrowRight size={13}/></Link></div>
+
     </aside>
   </>;
 }

@@ -81,3 +81,58 @@ body:has(.tool-app-loading) .site-header,body:has(.tool-app-loading) .site-foote
 .chat-recent-remove{display:grid;place-items:center;width:30px;height:34px;flex-shrink:0;border:0;background:transparent;border-radius:7px;color:#9aa4b4}
 .chat-recent-remove:hover,.chat-recent-remove:focus-visible{color:#b42332;background:#fce8e9}
 @media(max-width:720px){.chat-recent-remove{width:38px;height:40px}.chat-recent-clear{padding:8px}}
+
+/* Center the entire first-turn composition, not a padded flex child. */
+.chat-conversation--empty{display:grid;place-items:center;justify-content:initial;align-content:initial;overflow-y:auto;min-height:0;padding:20px 24px}
+.chat-empty-center{width:min(100%,780px);display:flex;flex-direction:column;align-items:center;gap:0;margin:auto;padding:0}
+.chat-empty-center .chat-welcome{min-height:0;width:100%;max-width:none;margin:0;padding:0;text-align:center}
+.chat-empty-center .chat-welcome h1{margin:0 0 26px;font-size:clamp(25px,3vw,33px);font-weight:700;letter-spacing:-.04em}
+.chat-empty-center .chat-composer-area{width:100%;max-width:720px;margin:0;padding:0;background:transparent}
+.chat-empty-center .chat-composer{min-height:60px}
+.chat-empty-center .chat-examples{width:100%;max-width:720px;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:23px}
+.chat-empty-center .chat-examples button{background:transparent;border:0;border-radius:10px;padding:12px 13px;font-size:14px!important;color:#606b7c}
+.chat-empty-center .chat-examples button:hover{background:#f2f5fa;transform:none}
+/* Favorite on the left of the title, separate tool-opening link on the right. */
+.chat-result-card{grid-template-columns:62px minmax(0,1fr)}
+.chat-result-card>a{border-right:0;border-left:1px solid #edf0f5}
+.chat-result-card .favorite-button{grid-column:1;grid-row:1;justify-self:center;align-self:center}
+.chat-result-card>a{grid-column:2;grid-row:1}
+@media(max-width:720px){
+  .chat-conversation--empty{padding:12px 17px}
+  .chat-empty-center .chat-welcome h1{font-size:clamp(23px,5vw,29px);margin-bottom:22px}
+  .chat-empty-center .chat-examples{grid-template-columns:1fr;gap:3px;margin-top:14px}
+  .chat-empty-center .chat-examples button{padding:10px 12px}
+  .chat-result-card{grid-template-columns:52px minmax(0,1fr)}
+}
+/* Shared sidebar across index and detail guide pages. */
+body:has(.guides-app-shell) .site-header,body:has(.guides-app-shell) .site-footer{display:none}
+.guides-app-shell{--chat-sidebar:#f9f9f9;display:flex;min-height:100dvh;background:#fff;color:#202123}
+.guide-main{min-width:0}
+.guide-topbar{border-bottom:1px solid #edf0f4}
+.guide-top-title{display:inline-flex;align-items:center;gap:9px;font-size:16px;font-weight:740;color:#334155}
+.guide-page-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.guide-browser,.guide-article-page{width:min(1170px,calc(100% - 64px));margin:0 auto;padding:42px 0 130px}
+.guide-browser h1,.guide-article-page h1{font-size:clamp(25px,2.6vw,33px);margin:0 0 26px;letter-spacing:-.05em}
+.guide-search{display:flex;align-items:center;gap:11px;border:1px solid #e1e8f2;border-radius:15px;padding:12px 16px;margin-bottom:26px;color:#7183a1;background:#fff}
+.guide-search:focus-within{border-color:#8fb1f9}
+.guide-search input{font:inherit;font-size:15px;outline:0;flex:1;min-width:0;border:0;background:transparent;color:#334155}
+.guide-search button{display:grid;place-items:center;border:0;background:none;color:#64748b;padding:5px}
+.guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.guide-tile{border:1px solid #e7eaf0;border-radius:15px;min-height:174px;padding:22px;display:flex;flex-direction:column;gap:14px;transition:border-color .18s,box-shadow .18s}
+.guide-tile:hover{border-color:#aec9fe;box-shadow:0 8px 24px #21324c12}
+.guide-tile-top{display:flex;justify-content:space-between;align-items:center;color:#7183a1}
+.guide-tile-icon{width:44px;height:44px;border-radius:13px;background:#edf4ff;display:grid;place-items:center;color:#306de4}
+.guide-tile strong{font-size:16px;line-height:1.45;letter-spacing:-.02em}
+.guide-tile-action{margin-top:auto;color:#8796ab;font-size:13px}
+.guide-no-results{padding:50px;text-align:center;color:#78859a}
+.guide-no-results button{border:1px solid #dde5f1;padding:10px 15px;border-radius:9px;background:white}
+.guide-article-page{width:min(790px,calc(100% - 64px))}
+.guide-back{display:inline-flex;align-items:center;gap:8px;color:#64748b;font-size:14px;margin-bottom:25px}
+.guide-steps{counter-reset:none;list-style:none;padding:0;margin:0 0 20px;display:grid;gap:11px}
+.guide-steps li{display:flex;align-items:center;gap:16px;padding:16px 19px;border:1px solid #e7eaf0;border-radius:12px;font-size:15px}
+.guide-steps li span{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;background:#eff4ff;border-radius:50%;color:#2463eb;font-weight:750;font-size:13px}
+.guide-tip{font-size:14px;color:#77839a;margin:20px 0 30px;line-height:1.6}
+.guide-open-tool{display:inline-flex;gap:10px;align-items:center;padding:13px 22px;background:#2563eb;color:#fff;border-radius:11px;font-weight:700}
+.guide-open-tool:hover{background:#1d4ed8;color:#fff}
+@media(max-width:1020px){.guide-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.guide-browser,.guide-article-page{width:calc(100% - 34px);padding:25px 0 100px}.guide-cards{grid-template-columns:1fr;gap:11px}.guide-tile{min-height:145px;padding:17px}.guide-topbar{padding:0 15px}}

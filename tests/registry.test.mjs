@@ -21,7 +21,7 @@ test('출시 전 색인 차단, 파일 업로드 API 금지, 읽기 전용 카�
   const robots=fs.readFileSync(path.join(root,'app/robots.ts'),'utf8');
   assert.match(robots,/NEXT_PUBLIC_LAUNCH_READY/);
   const apiRoot=path.join(root,'app/api');
-  assert.deepEqual(fs.readdirSync(apiRoot).sort(),['tool-catalog','tool-popularity']);
+  assert.deepEqual(fs.readdirSync(apiRoot).sort(),['tool-catalog','tool-popularity','tool-prompts']);
   const route=fs.readFileSync(path.join(apiRoot,'tool-catalog/route.ts'),'utf8');
   assert.match(route,/export async function GET/);
   assert.doesNotMatch(route,/\b(?:POST|PUT|PATCH|DELETE)\b/);
@@ -31,6 +31,12 @@ test('출시 전 색인 차단, 파일 업로드 API 금지, 읽기 전용 카�
   assert.match(popularity,/known\.has\(slug\)/);
   assert.doesNotMatch(popularity,/\b(?:formData|arrayBuffer)\s*\(/);
   assert.doesNotMatch(popularity,/multipart\/form-data/);
+  const prompts=fs.readFileSync(path.join(apiRoot,'tool-prompts/route.ts'),'utf8');
+  assert.match(prompts,/export async function GET/);
+  assert.match(prompts,/export async function POST/);
+  assert.match(prompts,/allowed\.has\(slug\)/);
+  assert.doesNotMatch(prompts,/\b(?:formData|arrayBuffer)\s*\(/);
+
 });
 
 test('기본 파일 처리에서 업로드 fetch API를 사용하지 않는다',()=>{

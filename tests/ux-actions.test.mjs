@@ -8,9 +8,9 @@ const content = (name) => readFileSync(join(root, name), 'utf8');
 
 test('추천 카드의 별표와 이동 링크는 독립된 레이아웃 영역을 갖는다', () => {
   const css = content('app/chat.css');
-  assert.match(css, /\.chat-result-card\{[^}]*display:grid;grid-template-columns:minmax\(0,1fr\) 62px/);
+  assert.match(css, /\.chat-result-card\{grid-template-columns:62px minmax\(0,1fr\)/);
   assert.match(css, /\.chat-result-card \.favorite-button\{position:static/);
-  assert.match(css, /\.chat-result-card>a\{[^}]*border-right:/);
+  assert.match(css, /\.chat-result-card>a\{border-right:0;border-left:/);
   const jsx = content('components/tool-chat-home.tsx');
   assert.match(jsx, /<span className="chat-result-open"/);
   assert.match(jsx, /<FavoriteButton slug=\{tool\.slug\}/);
