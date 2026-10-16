@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Clock3, FlaskConical, Menu, MessageCirclePlus, PanelLeftClose, Star, X } from "lucide-react";
+import { ArrowRight, Clock3, FlaskConical, Menu, MessageCirclePlus, PanelLeftClose, PanelLeftOpen, Star, X } from "lucide-react";
 import { tools, type Tool } from "@/lib/tools";
 import { ToolIcon } from "@/components/tool-icon";
 import { useFavorites } from "@/lib/use-favorites";
@@ -39,7 +39,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
     <aside className={`chat-sidebar${mobileOpen ? " is-open" : ""}`} aria-label="도구 탐색 사이드바">
       <div className="chat-sidebar-top">
         <Link href="/" className="chat-brand" onClick={() => { close(); onNewChat?.(); }}><span className="chat-brand-icon"><FlaskConical size={21}/></span><strong>웅이연구소</strong></Link>
-        <button type="button" aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"} className="chat-sidebar-collapse" onClick={() => setCollapsed(!collapsed)}><PanelLeftClose size={18}/></button>
+        <button type="button" aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"} className="chat-sidebar-collapse" onClick={() => setCollapsed(!collapsed)}>{collapsed ? <PanelLeftOpen size={18}/> : <PanelLeftClose size={18}/>}</button>
         <button type="button" aria-label="사이드바 닫기" className="chat-mobile-close" onClick={close}><X size={19}/></button>
       </div>
       <nav className="chat-side-nav" aria-label="채팅 및 도구">
@@ -56,7 +56,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
           <p><Clock3 size={14}/> 최근 사용한 도구</p>{toolLinks(recentIds)}
         </section>}
       </div>
-      <div className="chat-sidebar-bottom"><span>AI API 없이 무료 검색</span><Link href="/guides" onClick={close}>사용 가이드 <ArrowRight size={13}/></Link></div>
+      <div className="chat-sidebar-bottom"><Link href="/guides" onClick={close}>사용 가이드 <ArrowRight size={13}/></Link></div>
     </aside>
   </>;
 }
