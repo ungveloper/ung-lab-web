@@ -13,6 +13,25 @@ export const metadata: Metadata = {
  ...( /^ca-pub-\d{16}$/.test(process.env.ADSENSE_PUBLISHER_ID??"")
    ? {verification:{other:{"google-adsense-account":process.env.ADSENSE_PUBLISHER_ID!}}}
    : {} ),
+
+  icons: {
+    icon: [
+      {url: "/favicon.ico", sizes: "any"},
+      {url: "/favicon-32x32.png", type: "image/png", sizes: "32x32"},
+      {url: "/favicon-16x16.png", type: "image/png", sizes: "16x16"},
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{url: "/apple-touch-icon.png", sizes: "180x180"}],
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION?.trim() || undefined,
+    other: {
+      ...(process.env.NAVER_SITE_VERIFICATION?.trim()
+        ? {"naver-site-verification":process.env.NAVER_SITE_VERIFICATION.trim()}:{}),
+      ...(/^ca-pub-\d{16}$/.test(process.env.ADSENSE_PUBLISHER_ID??"")
+        ? {"google-adsense-account":process.env.ADSENSE_PUBLISHER_ID!}:{}),
+    },
+  },
 };
 export default function RootLayout({children}:{children:React.ReactNode}){
  return <html lang="ko" data-scroll-behavior="smooth"><body><header className="site-header"><div className="site-width head-row"><Link href="/" className="logo" aria-label="웅이연구소 홈"><span className="logo-icon"><FlaskConical size={21}/></span><span>웅이연구소<small>UNG LAB</small></span></Link><nav aria-label="주 메뉴"><Link href="/tools">전체 도구</Link><Link href="/guides">가이드</Link><Link href="/about">소개</Link></nav></div></header>{children}<footer className="site-footer"><div className="site-width foot-grid"><div><div className="foot-brand"><FlaskConical size={20}/> 웅이연구소</div><p>필요한 작업을 더 빠르고 간편하게.<br/>사용자 파일은 브라우저 안에서 처리합니다.</p><div className="foot-safe"><ShieldCheck size={15}/> 서버에 원본 파일을 업로드하지 않아요</div></div><div><h3>웅이연구소</h3><Link href="/about">서비스 소개</Link><Link href="/guides">사용 가이드</Link><Link href="/contact">문의</Link></div><div><h3>정책 및 개발</h3><Link href="/privacy">개인정보 처리방침</Link><Link href="/terms">이용약관</Link><a href="https://github.com/ungveloper/ung-lab-web" rel="noreferrer" target="_blank"><Github size={14}/> GitHub</a></div></div><div className="site-width foot-bottom">© 2026 웅이연구소 · ung-lab.com</div></footer></body></html>;

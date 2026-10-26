@@ -179,3 +179,14 @@ body:has(.guides-app-shell) .site-header,body:has(.guides-app-shell) .site-foote
 .guide-extra ul{padding-left:23px;margin:0 0 14px}
 .guide-extra li+li{margin-top:8px}
 .guide-tile-summary{font-size:13px;color:#66768c;line-height:1.55}
+
+/* One logo asset, always at its supplied 720:166 aspect ratio. */
+.brand-wordmark{display:block;width:clamp(140px,11.5vw,176px);height:auto;aspect-ratio:720/166;max-width:100%;object-fit:contain}
+/* The shared workspace layout remains mounted as the legal pages change. */
+.site-info-page{padding-block:28px 64px;min-height:100%;line-height:1.85}
+.site-info-page h1{font-size:clamp(25px,3vw,32px);line-height:1.35;letter-spacing:-.025em}
+.site-info-page h2{font-size:19px;line-height:1.5;margin-top:30px}
+.site-info-page p{line-height:1.85;overflow-wrap:anywhere}
+.site-info-back{display:inline-flex;align-items:center;gap:8px;border:1px solid #dbe3ed;background:transparent;border-radius:10px;padding:9px 13px;min-height:40px;font-size:14px;font-weight:650;color:inherit;cursor:pointer;margin-bottom:20px}
+.site-info-back:hover,.site-info-back:focus-visible{border-color:#3b82f6;color:#2563eb}
+@media(max-width:720px){.site-info-page{padding-block:18px 48px}.brand-wordmark{width:148px}}
