@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import {fileURLToPath} from "node:url";
+const read=p=>fs.readFileSync(fileURLToPath(new URL(`../${p}`,import.meta.url)),"utf8");
+test("메인 앱 사이드바에서 신뢰·법적 페이지 접근",()=>{const s=read("components/app-sidebar.tsx");for(const p of ["/about","/contact","/privacy","/terms"])assert.ok(s.includes(`href="${p}"`));});
+test("가이드 11개는 11개 도구에 각각 연결되며 실질적 해결 정보를 포함",()=>{const s=read("lib/guides.ts");assert.equal([...s.matchAll(/\{slug:"/g)].length,11);for(const name of ["overview","checks","troubleshooting"])assert.ok(s.includes(name));});
+test("가이드 내용과 도구 사용 지원을 실제 콘텐츠에 연결",()=>{assert.match(read("app/(workspace)/guides/[slug]/page.tsx"),/guide\.troubleshooting/);assert.match(read("app/tools/[slug]/page.tsx"),/tool\.details/);});
+test("sitemap은 모든 기능 보기 URL을 포함하고 출시 준비 플래그를 보존",()=>{assert.match(read("app/sitemap.ts"),/"\/tools"/);assert.match(read("app/sitemap.ts"),/NEXT_PUBLIC_LAUNCH_READY/);assert.match(read("app/robots.ts"),/NEXT_PUBLIC_LAUNCH_READY/);});
+test("ads.txt는 유효한 게시자 ID에만 응답하고 가짜 값은 사용하지 않음",()=>{const s=read("app/ads.txt/route.ts");assert.match(s,/ADSENSE_PUBLISHER_ID/);assert.match(s,/status:404/);assert.doesNotMatch(s,/pub-1234567890123456, DIRECT/);assert.ok(!fs.existsSync(fileURLToPath(new URL("../public/ads.txt",import.meta.url))));});
+test("운영 문서에는 개인정보 보호·문의 및 도구 제한을 명시",()=>{for(const path of ["app/privacy/page.tsx","app/about/page.tsx","app/contact/page.tsx","app/terms/page.tsx"])assert.doesNotMatch(read(path),/출시 전 초안/);assert.match(read("app/privacy/page.tsx"),/ung-lab-visited-tools/);});

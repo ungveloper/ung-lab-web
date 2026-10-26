@@ -162,3 +162,20 @@ body:has(.guides-app-shell) .site-header,body:has(.guides-app-shell) .site-foote
 .workspace-page-body>.chat-browse-page{flex:1;min-height:0;width:100%;overflow-y:auto}
 .workspace-page-body>.guide-browser,.workspace-page-body>.guide-article-page{flex:0 0 auto}
 @media(max-width:720px){.workspace-shell,.workspace-main{height:100dvh}}
+
+/* Public trust/navigation links: accessible even inside the full-height app shell. */
+.adsense-trust-links{display:flex;gap:7px 13px;flex-wrap:wrap;align-items:center;padding:12px 15px 15px;border-top:1px solid #e9edf3}
+.adsense-trust-links a{font-size:12px;color:#627084;text-decoration:none;white-space:nowrap}
+.adsense-trust-links a:hover,.adsense-trust-links a:focus-visible{color:#1d4ed8;text-decoration:underline}
+.chat-home--compact .adsense-trust-links{display:none}
+@media(max-width:720px){.adsense-trust-links a{padding-block:5px}}
+.tool-help{margin-top:32px;padding:20px 22px;border:1px solid #e8edf4;border-radius:12px}
+.tool-help h2{font-size:19px;margin:0 0 15px}
+.tool-help ol,.tool-help ul{padding-left:22px;line-height:1.7;margin:8px 0 16px}
+.tool-help li+li{margin-top:6px}
+.tool-help a{color:#1d4ed8;font-weight:650;text-decoration:underline;text-underline-offset:3px}
+.guide-overview,.guide-extra{margin:16px 0 24px;line-height:1.75;color:#43516a}
+.guide-extra h2{font-size:19px;color:#253044;margin:0 0 11px}
+.guide-extra ul{padding-left:23px;margin:0 0 14px}
+.guide-extra li+li{margin-top:8px}
+.guide-tile-summary{font-size:13px;color:#66768c;line-height:1.55}

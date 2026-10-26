@@ -15,7 +15,7 @@ export function GuideBrowser(){
     const term=query.toLocaleLowerCase("ko").replace(/\s/g,"");
     return guides.filter(guide=>{
       const tool=bySlug.get(guide.tool);
-      const text=[guide.title,guide.tip,...guide.steps,tool?.title??"",...(tool?.tags??[]),...(tool?.aliases??[])].join(" ").toLocaleLowerCase("ko").replace(/\s/g,"");
+      const text=[guide.title,guide.overview,guide.tip,...guide.steps,...guide.checks,...guide.troubleshooting,tool?.title??"",...(tool?.tags??[]),...(tool?.aliases??[])].join(" ").toLocaleLowerCase("ko").replace(/\s/g,"");
       return !term||text.includes(term);
     });
   },[query]);
@@ -26,7 +26,7 @@ export function GuideBrowser(){
       const tool=bySlug.get(guide.tool);
       return <Link className="guide-tile" href={`/guides/${guide.slug}`} key={guide.slug}>
         <span className="guide-tile-top"><span className="guide-tile-icon">{tool?<ToolIcon name={tool.icon} size={22}/>:<BookOpen size={22}/>}</span><ArrowUpRight size={19}/></span>
-        <strong>{guide.title}</strong><span className="guide-tile-action">{tool?.title??"가이드 보기"}</span>
+        <strong>{guide.title}</strong><span className="guide-tile-summary">{guide.overview}</span><span className="guide-tile-action">{tool?.title??"가이드 보기"}</span>
       </Link>;
     })}</div>
     {filtered.length===0&&<div className="guide-no-results"><p>검색 결과 없음</p><button type="button" onClick={()=>setQuery("")}>전체 보기</button></div>}

@@ -59,7 +59,12 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
           </div>:null})}
         </section>}
       </div>
-
+      <nav className="chat-sidebar-bottom adsense-trust-links" aria-label="사이트 정보">
+        <Link href="/about" onClick={close}>소개</Link>
+        <Link href="/contact" onClick={close}>문의</Link>
+        <Link href="/privacy" onClick={close}>개인정보처리방침</Link>
+        <Link href="/terms" onClick={close}>이용약관</Link>
+      </nav>
     </aside>
   </>;
 }

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import { categories, tools } from "@/lib/tools";
+import { guides } from "@/lib/guides";
 import { getCatalogTool, getToolCatalog } from "@/lib/tool-catalog";
 import { ToolIcon } from "@/components/tool-icon";
 import { ToolWorkspace } from "@/components/tool-workspace";
@@ -35,6 +36,7 @@ async function ToolPageContent({ params }: PageProps) {
   if (!tool) notFound();
   const category = categories[tool.category];
   const related = catalog.filter((item) => item.category === tool.category && item.slug !== slug).slice(0, 3);
+  const guide=guides.find(item=>item.tool===tool.slug);
 
   return (
     <ToolPageShell slug={slug} title={tool.title} catalog={catalog}>
@@ -52,6 +54,12 @@ async function ToolPageContent({ params }: PageProps) {
           </div>
         </div>
         <ToolWorkspace tool={tool}/>
+        <section className="tool-help" aria-labelledby="tool-help-title">
+          <h2 id="tool-help-title">사용 방법과 지원 범위</h2>
+          <ol>{tool.steps.map((step,index)=><li key={index}>{step}</li>)}</ol>
+          <ul>{tool.details.map((detail,index)=><li key={index}>{detail}</li>)}</ul>
+          {guide&&<Link href={`/guides/${guide.slug}`}>자세한 사용 가이드 보기 →</Link>}
+        </section>
         {related.length > 0 && <section className="related" aria-label="관련 도구">
           <h2>관련 도구</h2>
           <div className="related-grid">{related.map((item) => <div className="related-item" key={item.slug}>

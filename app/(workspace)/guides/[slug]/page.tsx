@@ -18,8 +18,16 @@ async function GuidePageContent({params}:Props){
   return <AppContentContainer as="main" className="guide-article-page">
     <Link className="guide-back" href="/guides"><ArrowLeft size={17}/> 가이드 목록</Link>
     <h1>{guide.title}</h1>
+    <p className="guide-overview">{guide.overview}</p>
     <ol className="guide-steps">{guide.steps.map((step,index)=><li key={index}><span>{index+1}</span>{step}</li>)}</ol>
-    <p className="guide-tip">{guide.tip}</p>
+    <section className="guide-extra" aria-labelledby="guide-checks-title">
+      <h2 id="guide-checks-title">확인할 점</h2>
+      <ul>{guide.checks.map((text,index)=><li key={index}>{text}</li>)}</ul>
+    </section>
+    <section className="guide-extra" aria-labelledby="guide-errors-title">
+      <h2 id="guide-errors-title">문제가 생겼다면</h2>
+      <ul>{guide.troubleshooting.map((text,index)=><li key={index}>{text}</li>)}</ul>
+    </section>
     <Link className="guide-open-tool" href={`/tools/${guide.tool}`}>도구 열기 <ArrowUpRight size={18}/></Link>
   </AppContentContainer>;
 }
