@@ -190,3 +190,10 @@ body:has(.guides-app-shell) .site-header,body:has(.guides-app-shell) .site-foote
 .site-info-back{display:inline-flex;align-items:center;gap:8px;border:1px solid #dbe3ed;background:transparent;border-radius:10px;padding:9px 13px;min-height:40px;font-size:14px;font-weight:650;color:inherit;cursor:pointer;margin-bottom:20px}
 .site-info-back:hover,.site-info-back:focus-visible{border-color:#3b82f6;color:#2563eb}
 @media(max-width:720px){.site-info-page{padding-block:18px 48px}.brand-wordmark{width:148px}}
+
+
+/* New brand identity: use the supplied 720×166 logo, not the old FlaskConical. */
+.brand-hero-wordmark{display:flex;align-items:center;justify-content:center;width:100%;margin-inline:auto;margin-bottom:14px}
+.brand-hero-wordmark img{display:block;width:clamp(172px,29vw,224px);height:auto;aspect-ratio:720/166;object-fit:contain}
+.brand-symbol-image{display:inline-block;flex-shrink:0;width:var(--brand-symbol-size,22px);height:var(--brand-symbol-size,22px);object-fit:contain;vertical-align:middle}
+@media(max-width:640px){.brand-hero-wordmark img{width:192px}}
