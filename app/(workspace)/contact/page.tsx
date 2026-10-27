@@ -1,10 +1,21 @@
-import {SiteInfoBackButton} from "@/components/site-info-back-button";
-import {AppContentContainer} from "@/components/app-content-container";
-export const metadata={title:"문의 및 오류 신고",description:"웅이연구소 PDF·이미지·문서 도구 사용 중 발생한 오류와 문의 접수 안내"};
-export default function Page(){return <AppContentContainer as="main" className="content-page site-info-page">
-<SiteInfoBackButton/>
-<h1>문의 및 오류 신고</h1><p>도구에서 오류를 발견했거나 사용 방법에 대한 도움이 필요하다면 공개된 GitHub 이슈를 통해 제보할 수 있습니다.</p>
-<p><a href="https://github.com/ungveloper/ung-lab-web/issues" target="_blank" rel="noopener noreferrer">GitHub Issues에서 문의하기 →</a></p>
-<h2>제보하면 도움이 되는 정보</h2><p>사용한 도구명, 브라우저 및 운영체제, 오류 메시지와 재현 순서를 알려주세요. 원본 파일이나 계정 비밀번호, 주민등록번호 같은 개인정보는 공개 이슈에 올리지 마세요.</p>
-<h2>접수 방식</h2><p>현재 별도의 이메일 상담 창구는 제공하지 않습니다. GitHub 이슈는 공개 공간이며, 신고 내용을 삭제하거나 비공개로 보호하기 어려울 수 있습니다.</p>
-</AppContentContainer>}
+import { SiteInfoBackButton } from "@/components/site-info-back-button";
+import { AppContentContainer } from "@/components/app-content-container";
+
+export const metadata = {
+  title: "문의 및 오류 신고",
+  description: "웅이연구소의 기능 오류와 사용법 문의를 접수하는 방법입니다.",
+  alternates: { canonical: "/contact" },
+};
+
+export default function Page() {
+  return <AppContentContainer as="main" className="content-page site-info-page">
+    <SiteInfoBackButton />
+    <h1>문의 및 오류 신고</h1>
+    <p>파일이 열리지 않거나 도구가 예상과 다르게 작동한다면 GitHub 이슈로 알려주세요. 서비스 개선에 필요한 제보를 확인하는 공개 창구입니다.</p>
+    <p><a href="https://github.com/ungveloper/ung-lab-web/issues" target="_blank" rel="noopener noreferrer">GitHub에서 문의하기 →</a></p>
+    <h2>무엇을 적으면 좋을까요?</h2>
+    <p>사용한 도구, 브라우저와 운영체제, 어떤 순서로 작업했는지, 화면에 나타난 오류 메시지를 알려주세요. 가능하면 개인정보를 가린 화면 사진도 도움이 됩니다.</p>
+    <h2>개인정보에 주의해 주세요</h2>
+    <p>GitHub 이슈는 누구나 읽을 수 있습니다. 원본 문서, 주민등록번호, 비밀번호, 연락처처럼 공개되면 곤란한 정보는 첨부하지 마세요. 현재 별도의 비공개 이메일 상담 창구는 운영하지 않습니다.</p>
+  </AppContentContainer>;
+}

@@ -25,7 +25,7 @@ async function GuidePageContent({params}:Props){
       <ul>{guide.checks.map((text,index)=><li key={index}>{text}</li>)}</ul>
     </section>
     <section className="guide-extra" aria-labelledby="guide-errors-title">
-      <h2 id="guide-errors-title">문제가 생겼다면</h2>
+      <h2 id="guide-errors-title">문제가 생길 때</h2>
       <ul>{guide.troubleshooting.map((text,index)=><li key={index}>{text}</li>)}</ul>
     </section>
     <Link className="guide-open-tool" href={`/tools/${guide.tool}`}>도구 열기 <ArrowUpRight size={18}/></Link>

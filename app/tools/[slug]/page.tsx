@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!tool) return {};
   return {
     title: tool.title,
-    description: `${tool.subtitle}. ${tool.formats}. 로그인·설치 없이 브라우저에서 바로 사용하세요.`,
+    description: `${tool.subtitle}. ${tool.formats}. 가입이나 설치 없이 웹에서 사용할 수 있습니다.`,
     alternates: { canonical: `/tools/${slug}` },
     openGraph: { title: tool.title, description: tool.subtitle, url: `/tools/${slug}` },
   };
@@ -55,7 +55,7 @@ async function ToolPageContent({ params }: PageProps) {
         </div>
         <ToolWorkspace tool={tool}/>
         <section className="tool-help" aria-labelledby="tool-help-title">
-          <h2 id="tool-help-title">사용 방법과 지원 범위</h2>
+          <h2 id="tool-help-title">사용법과 지원 범위</h2>
           <ol>{tool.steps.map((step,index)=><li key={index}>{step}</li>)}</ol>
           <ul>{tool.details.map((detail,index)=><li key={index}>{detail}</li>)}</ul>
           {guide&&<Link href={`/guides/${guide.slug}`}>자세한 사용 가이드 보기 →</Link>}

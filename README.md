@@ -21,7 +21,7 @@ npm run verify
 - 기본값은 **미출시 상태** (`NEXT_PUBLIC_LAUNCH_READY`를 지정하지 않음)입니다. 11개 도구를 대표 샘플, 대용량/손상 파일, Chrome/Edge/Safari/Firefox/iOS Safari/Android Chrome으로 테스트하고 개인정보/법적 문서 검토 후에만 출시 플래그를 설정하세요.
 - 사용자의 로컬 파일은 서버로 업로드하지 않습니다. AI 모델은 처음 실행할 때 모델 배포 서버에서 내려받습니다. `Xenova/modnet`은 Apache-2.0의 인물 분리 모델이므로 상품 배경 제거 품질을 보장하지 않습니다.
 - Office 미리보기는 레이아웃 재현이 완벽하지 않으며 매크로·외부 링크를 실행하지 않는 읽기 전용을 목표로 합니다.
-- `public/ads.txt`는 실제 애드센스 계정이 승인된 뒤 게시자 정보를 넣으세요.
+- `app/ads.txt/route.ts`가 유효한 `ADSENSE_PUBLISHER_ID`를 설정했을 때만 `/ads.txt`를 응답합니다. 실제 계정 ID만 입력하세요.
 - 기존 `ung-lab.com` 색인 URL은 전환 전에 목록을 정리하고, 정확히 대응하는 새 경로에만 301을 적용하세요.
 
 ## 코드 구조

@@ -24,6 +24,6 @@ test("Google / Naver 인증과 robots 출시 게이트 보존",()=>{
  assert.match(r("app/sitemap.ts"),/NEXT_PUBLIC_LAUNCH_READY/);
 });
 test("내비게이션과 로고의 접근성",()=>{
- assert.match(r("components/site-info-back-button.tsx"),/router\.push\("\/tools"\)/);
+ assert.match(r("components/site-info-back-button.tsx"),/href="\/"/);
  assert.match(r("components/app-sidebar.tsx"),/alt="웅이연구소"/);
 });
