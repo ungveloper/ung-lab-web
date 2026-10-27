@@ -1,9 +1,6 @@
 /* Editorial layout for About, Contact, Privacy and Terms. Other tool pages are unaffected. */
 .app-content-container.content-page.site-info-page{
-  width:calc(100% - 64px);
-  max-width:780px;
-  min-width:0;
-  margin:0 auto;
+  /* max-width and horizontal margins now come from AppContentContainer Tailwind utilities. */
   padding:42px 0 116px;
   font-size:16px;
   line-height:1.95;
@@ -33,7 +30,7 @@
 .site-info-page .site-info-primary-link:hover{background:#1d4ed8;border-color:#1d4ed8}
 .site-info-page :is(a,button):focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
 @media(max-width:720px){
-  .app-content-container.content-page.site-info-page{width:calc(100% - 36px);padding:24px 0 78px;font-size:16px;line-height:1.93}
+  .app-content-container.content-page.site-info-page{padding:24px 0 78px;font-size:16px;line-height:1.93}
   .site-info-page .site-info-back{margin-bottom:27px}
   .site-info-page .site-info-hero{margin-bottom:26px;padding-bottom:27px}
   .site-info-page .site-info-lead{font-size:16px;line-height:1.95;margin-top:15px}
@@ -43,7 +40,7 @@
   .site-info-page .site-info-section h2{margin-bottom:14px}
   .site-info-page .site-info-section p{line-height:1.96}
 }
-@media(max-width:359px){.app-content-container.content-page.site-info-page{width:calc(100% - 28px)}.site-info-page .site-info-toc a{padding:6px 10px}}
+@media(max-width:359px){.site-info-page .site-info-toc a{padding:6px 10px}}
 
 /* UNGLAB_CONTACT_WORKSPACE_SCROLL_V1
    Contact is rendered inside the chat-oriented workspace body.

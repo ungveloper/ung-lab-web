@@ -16,7 +16,7 @@ const sectionHeading = "text-[21px] font-bold leading-[1.5] tracking-tight text-
 export default function Page() {
   const isConnected = Boolean(process.env.NOTION_API_TOKEN && process.env.NOTION_DATA_SOURCE_ID);
   return (
-    <AppContentContainer as="main" className="!mx-auto !w-full !max-w-[780px] !px-5 !pb-28 !pt-9 md:!px-8">
+    <AppContentContainer as="main" className="!mx-auto !px-0 !pb-28 !pt-9 md:!pt-11">
       <SiteInfoBackButton />
       <article className="site-info-article min-w-0 text-slate-700">
         <header className="site-info-hero mb-8 border-b border-slate-200 pb-8">

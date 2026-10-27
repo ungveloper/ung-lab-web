@@ -13,7 +13,7 @@ test("공통 route group이 홈페이지·도구 목록·가이드 목록과 상
 test("사이드바·상단 헤더는 공통 shell에 단 한 번만 존재한다",()=>{
   const shell=read("components/workspace-shell.tsx");
   assert.match(shell,/<AppSidebar mode=\{mode\}/);
-  assert.match(shell,/<header className="chat-topbar workspace-topbar">/);
+  assert.match(shell,/<header className="chat-topbar workspace-topbar h-16! min-h-16!">/);
   assert.match(shell,/workspace-page-body/);
   assert.match(shell,/useSelectedLayoutSegment\(\)/);
   assert.match(shell,/catalog=\{catalog\}/);

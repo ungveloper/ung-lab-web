@@ -38,9 +38,9 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
   });
   return <>
     {mobileOpen && <button type="button" aria-label="사이드바 닫기" className="chat-sidebar-shade" onClick={close}/>}
-    <aside className={`chat-sidebar${mobileOpen ? " is-open" : ""}`} aria-label="도구 탐색 사이드바">
-      <div className="chat-sidebar-top">
-        <Link href="/" className="chat-brand" onClick={() => { close(); onNewChat?.(); }}><strong><Image src="/images/brand/logo.png" alt="웅이연구소" width={720} height={166} className="brand-wordmark" priority/></strong></Link>
+    <aside className={`chat-sidebar pt-0!${mobileOpen ? " is-open" : ""}`} aria-label="도구 탐색 사이드바">
+      <div className="chat-sidebar-top h-16! min-h-16! shrink-0! px-2! py-0!">
+        <Link href="/" className="chat-brand" onClick={() => { close(); onNewChat?.(); }}><strong><Image src="/images/brand/logo.png" alt="웅이연구소" width={720} height={166} className="brand-wordmark h-auto! w-[150px]! max-w-full! sm:w-[164px]!" priority/></strong></Link>
         <button type="button" aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"} className="chat-sidebar-collapse" onClick={() => setCollapsed(!collapsed)}>{collapsed ? <PanelLeftOpen size={18}/> : <PanelLeftClose size={18}/>}</button>
         <button type="button" aria-label="사이드바 닫기" className="chat-mobile-close" onClick={close}><X size={19}/></button>
       </div>

@@ -26,7 +26,7 @@ export function ToolPageShell({ slug, title, catalog, children }: Props) {
   return <div className={`tool-app-shell${collapsed ? " chat-home--compact" : ""}`} onClickCapture={captureToolNavigation}>
     <AppSidebar mode="tool" catalog={catalog} activeToolSlug={slug} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} collapsed={collapsed} setCollapsed={setCollapsed}/>
     <div className="chat-main tool-app-main">
-      <header className="chat-topbar tool-app-topbar">
+      <header className="chat-topbar tool-app-topbar h-16! min-h-16!">
         <button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={() => setMobileOpen(true)}><Menu size={22}/></button>
         <button type="button" className="tool-app-back" onClick={goBack}><ArrowLeft size={18}/><span>이전 화면으로</span></button>
         <span className="tool-app-top-title" title={title}>{title}</span>
