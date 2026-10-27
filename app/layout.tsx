@@ -8,6 +8,7 @@ import "./globals.css";
 import "./chat.css";
 import "./site-info.css";
 import "./not-found.css";
+import "./tailwind.css";
 
 const publisher = process.env.ADSENSE_PUBLISHER_ID?.trim() ?? "";
 const hasPublisher = /^ca-pub-\d{16}$/.test(publisher);

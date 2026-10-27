@@ -33,8 +33,8 @@ test("정보 페이지는 한결같은 본문 계층과 목차, 접근 가능한
     assert.match(content, /site-info-lead/);
     assert.match(content, /site-info-toc/);
     assert.match(content, /<article/);
-    assert.match(content, /<section className="site-info-section"/);
-    const ids = [...content.matchAll(/<section className="site-info-section" id="([^"]+)"/g)].map(m => m[1]);
+    assert.match(content, /<section[^>]*className="site-info-section/);
+    const ids = [...content.matchAll(/<section[^>]*id="([^"]+)"[^>]*className="site-info-section[^"]*"|<section[^>]*className="site-info-section[^"]*"[^>]*id="([^"]+)"/g)].map(m => m[1] || m[2]);
     assert.ok(ids.length >= 3, `${page}: 내용 섹션 부족`);
     assert.equal(ids.length, new Set(ids).size, `${page}: 중복 id`);
     for (const id of ids) assert.ok(content.includes(`href="#${id}"`), `${page}: 목차 연결 없음: ${id}`);
@@ -47,8 +47,8 @@ test("약관·개인정보의 기능 설명과 광고 고지는 유지한다", (
   assert.match(privacy, /ADSENSE_PUBLISHER_ID/);
   for (const term of ["ung-lab-visited-tools", "ung-lab-counted-prompts", "Supabase", "HttpOnly", "SameSite=Lax"]) assert.ok(privacy.includes(term));
   assert.match(src("app/(workspace)/terms/page.tsx"), /브라우저 호환성/);
-  assert.match(src("app/(workspace)/contact/page.tsx"), /NOTION_FORM_EMBED/);
-  assert.match(src("app/(workspace)/contact/page.tsx"), /<iframe/);
+  assert.match(src("app/(workspace)/contact/page.tsx"), /ContactForm/);
+  assert.doesNotMatch(src("app/(workspace)/contact/page.tsx"), /<iframe/);
 });
 
 test("정보 페이지 전용 CSS는 읽기 편한 본문과 모바일 여백, 키보드 포커스를 지원한다", () => {
