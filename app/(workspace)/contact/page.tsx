@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "문의하기",
-  description: "웅이연구소의 기능 오류, 사용법 및 서비스 관련 문의를 노션 양식으로 접수합니다.",
+  description: "웅이연구소의 기능 오류, 사용법 및 서비스 관련 문의를 온라인 양식으로 접수합니다.",
   alternates: { canonical: "/contact" },
 };
 
@@ -25,7 +25,7 @@ export default function Page() {
           <span className="site-info-eyebrow">고객 지원</span>
           <h1>문의하기</h1>
           <p className="site-info-lead">
-            사용법이 궁금하거나 오류를 발견하셨나요? 아래 노션 양식을 작성해 주세요.
+            사용법이 궁금하거나 오류를 발견하셨나요? 아래 문의 양식을 작성해 보내주세요.
             보내주신 내용은 서비스 개선과 문의 확인에 활용합니다.
           </p>
         </header>
@@ -39,28 +39,29 @@ export default function Page() {
 
         <section className="site-info-section" id="contact-form" aria-labelledby="contact-form-title">
           <h2 id="contact-form-title">문의 양식 작성하기</h2>
-          <p>아래 양식에 문의 내용과 답변을 받을 연락처를 입력한 뒤 제출해 주세요. 제출 여부는 노션 양식의 완료 안내에서 확인할 수 있습니다.</p>
+          <p>아래 양식에 문의 내용과 답변받을 이메일을 입력한 뒤 제출해 주세요. 제출 후 화면에 표시되는 완료 안내를 확인해 주세요.</p>
           <div className="site-info-contact-form-shell">
             <div className="site-info-contact-form-topline">
               <span className="site-info-contact-form-dot" aria-hidden="true" />
-              <strong>웅이연구소 문의 접수</strong>
-              <span>Notion Form</span>
+              <strong>웅이연구소 문의하기</strong>
+              <span>아래 항목을 작성해 주세요</span>
             </div>
             <iframe
               className="site-info-contact-form-iframe"
               src={NOTION_FORM_EMBED}
-              title="웅이연구소 노션 문의 접수 양식"
+              title="웅이연구소 문의 양식"
               loading="lazy"
+              scrolling="no"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />
           </div>
           <p className="site-info-contact-form-fallback">
-            양식이 보이지 않거나 제출이 되지 않나요? 노션에서 직접 열어 작성할 수 있습니다.
+            양식이 보이지 않거나 입력하기 어렵다면 새 창에서 작성해 주세요.
           </p>
           <p>
             <a className="site-info-primary-link" href={NOTION_FORM_LINK} target="_blank" rel="noopener noreferrer">
-              노션 문의 양식 새 창에서 열기
+              문의 양식 새 창에서 열기
             </a>
           </p>
         </section>
@@ -79,7 +80,7 @@ export default function Page() {
         <section className="site-info-section" id="contact-privacy" aria-labelledby="contact-privacy-title">
           <h2 id="contact-privacy-title">개인정보와 문의 내용 안내</h2>
           <p>양식은 외부 서비스인 Notion에서 제공하며, 입력한 이름·닉네임, 이메일, 문의 내용 등이 Notion에 저장될 수 있습니다. 원본 문서, 비밀번호, 주민등록번호, 인증 정보 등 민감한 내용은 입력하지 마세요.</p>
-          <p>문의 데이터를 처리하는 방식은 <Link href="/privacy">개인정보 처리방침</Link>을 참고해 주세요. 양식이 공개 데이터베이스가 아닌 제출 전용 Form인지 노션에서 설정한 뒤 운영해야 합니다.</p>
+          <p>문의 데이터 처리 방식은 <Link href="/privacy">개인정보 처리방침</Link>에서 확인하실 수 있습니다.</p>
         </section>
       </article>
     </AppContentContainer>
