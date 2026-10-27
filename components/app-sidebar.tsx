@@ -2,6 +2,7 @@
 import Image from "next/image";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BookOpen, Clock3, Menu, MessageCirclePlus, PanelLeftClose, PanelLeftOpen, Star, X } from "lucide-react";
 import { tools, type Tool } from "@/lib/tools";
 import { ToolIcon } from "@/components/tool-icon";
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, setMobileOpen, collapsed, setCollapsed, onNewChat }: Props) {
+  const pathname = usePathname();
   const { favoriteIds } = useFavorites();
   const recentIds = useRecentTools();
   const catalogMap = new Map([...tools, ...catalog].map((tool) => [tool.slug, tool]));
@@ -43,7 +45,7 @@ export function AppSidebar({ mode, catalog = tools, activeToolSlug, mobileOpen, 
         <button type="button" aria-label="사이드바 닫기" className="chat-mobile-close" onClick={close}><X size={19}/></button>
       </div>
       <nav className="chat-side-nav" aria-label="채팅 및 도구">
-        {onNewChat ? <button type="button" className={`chat-side-link${mode === "chat" ? " is-selected" : ""}`} onClick={() => { onNewChat(); close(); }}><MessageCirclePlus size={19}/><span>새 대화</span></button> :
+        {onNewChat ? <button type="button" className={`chat-side-link${mode === "chat" && pathname === "/" ? " is-selected" : ""}`} onClick={() => { onNewChat(); close(); }}><MessageCirclePlus size={19}/><span>새 대화</span></button> :
           <Link href="/" className="chat-side-link" onClick={clearChat}><MessageCirclePlus size={19}/><span>새 대화</span></Link>}
         <Link href="/tools" className={`chat-side-link${mode === "browse" ? " is-selected" : ""}`} aria-current={mode === "browse" ? "page" : undefined} onClick={close}><Menu size={19}/><span>모든 기능 보기</span></Link>
         <Link href="/guides" className={`chat-side-link${mode==="guides"?" is-selected":""}`} onClick={close}><BookOpen size={19}/><span>사용 가이드</span></Link>
