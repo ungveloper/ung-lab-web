@@ -4,6 +4,8 @@
 
 ## 먼저 확인할 환경 변수
 
+전체 환경변수와 비밀키 관리 방법은 루트의 `.env.example`과 `docs/environment-variables.md`를 참고하세요.
+
 Vercel(또는 실제 호스팅)의 **Production** 환경 변수를 설정하고 다시 배포해야 합니다.
 
 | 이름 | 설정 | 설명 |

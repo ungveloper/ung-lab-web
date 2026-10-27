@@ -11,6 +11,8 @@ Next.js 16 / React 19 기반의 무료 온라인 도구 플랫폼입니다. **�
 
 ## 실행
 
+처음 설정할 때는 루트의 `.env.example`을 `.env.local`로 복사하고 필요한 값만 채우세요. 환경변수 목록과 설정 범위는 `docs/environment-variables.md`에 정리했습니다. 기존 `.env.local`은 덮어쓰지 마세요.
+
 ```bash
 npm install
 npm run dev

@@ -51,7 +51,9 @@ test("정책·문의·소개 페이지에 실제 내용과 canonical을 제공",
     const source = read(`app/(workspace)/${page}/page.tsx`);
     assert.match(source, /canonical/);
     assert.match(source, /<h1>/);
-    assert.match(source, /<h2>/);
+    // Headings may have an ID so section navigation and aria-labelledby work.
+    assert.match(source, /<h2\b[^>]*>/);
+    assert.match(source, /<h2\s+id="[^"]+"/);
   }
   assert.match(read("app/(workspace)/privacy/page.tsx"), /ung-lab-visited-tools/);
   assert.match(read("app/(workspace)/privacy/page.tsx"), /Google AdSense/);
