@@ -41,6 +41,7 @@ export default function Page() {
       <section className="site-info-section" id="privacy-external" aria-labelledby="privacy-external-title">
         <h2 id="privacy-external-title">외부 서비스와 접속 정보</h2>
         <p>웹 호스팅, 보안 및 데이터베이스 제공자는 서비스 연결 과정에서 IP 주소 등 기술적 접속 정보를 처리할 수 있습니다. 인물 배경 제거 기능은 처음 사용하거나 모델 파일이 필요할 때 외부 모델 배포 서버에 연결될 수 있습니다.</p>
+        <p>문의 페이지에는 Notion에서 제공하는 외부 문의 양식이 포함되어 있습니다. 양식을 열거나 작성하면 Notion에 접속하며, 입력한 이름·닉네임, 이메일, 문의 내용과 접속 관련 정보가 Notion에서 처리될 수 있습니다. 이 정보는 문의 확인과 답변을 위해 사용합니다. 민감한 개인 정보나 작업 원본 파일을 첨부하지 마세요. 자세한 서비스별 처리 기준은 <a href="https://www.notion.so/privacy" target="_blank" rel="noopener noreferrer">Notion 개인정보 처리 안내 (새 창)</a>를 확인해 주세요.</p>
       </section>
       <section className="site-info-section" id="privacy-ads" aria-labelledby="privacy-ads-title">
         <h2 id="privacy-ads-title">광고와 관련 정보</h2>
@@ -53,7 +54,7 @@ export default function Page() {
       </section>
       <section className="site-info-section" id="privacy-contact" aria-labelledby="privacy-contact-title">
         <h2 id="privacy-contact-title">개인정보 관련 문의</h2>
-        <p>이용 기록이나 개인정보 처리에 관한 문의는 <Link href="/contact">문의 페이지</Link>에서 안내합니다. GitHub 이슈는 공개되므로 원본 파일이나 민감한 정보는 올리지 마세요.</p>
+        <p>이용 기록이나 개인정보 처리에 관한 문의는 <Link href="/contact">노션 문의 양식</Link>을 이용해 주세요. 이름·이메일·문의 내용은 양식 설정에 따라 노션 데이터베이스에 접수될 수 있습니다. 원본 파일이나 민감한 개인정보는 전달하지 마세요.</p>
       </section>
     </article>
   </AppContentContainer>;

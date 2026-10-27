@@ -47,7 +47,8 @@ test("약관·개인정보의 기능 설명과 광고 고지는 유지한다", (
   assert.match(privacy, /ADSENSE_PUBLISHER_ID/);
   for (const term of ["ung-lab-visited-tools", "ung-lab-counted-prompts", "Supabase", "HttpOnly", "SameSite=Lax"]) assert.ok(privacy.includes(term));
   assert.match(src("app/(workspace)/terms/page.tsx"), /브라우저 호환성/);
-  assert.match(src("app/(workspace)/contact/page.tsx"), /GitHub 이슈/);
+  assert.match(src("app/(workspace)/contact/page.tsx"), /NOTION_FORM_EMBED/);
+  assert.match(src("app/(workspace)/contact/page.tsx"), /<iframe/);
 });
 
 test("정보 페이지 전용 CSS는 읽기 편한 본문과 모바일 여백, 키보드 포커스를 지원한다", () => {
