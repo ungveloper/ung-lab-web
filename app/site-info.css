@@ -44,3 +44,23 @@
   .site-info-page .site-info-section p{line-height:1.96}
 }
 @media(max-width:359px){.app-content-container.content-page.site-info-page{width:calc(100% - 28px)}.site-info-page .site-info-toc a{padding:6px 10px}}
+
+/* UNGLAB_CONTACT_WORKSPACE_SCROLL_V1
+   Contact is rendered inside the chat-oriented workspace body.
+   The body owns the single scrollbar; the form stays a normal document flow.
+   :has(#contact-form) restricts this fix to /contact, not chat or tool workspaces. */
+.workspace-page-body:has(#contact-form) {
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.workspace-page-body:has(#contact-form) > .app-content-container {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: max-content;
+  overflow: visible !important;
+}
