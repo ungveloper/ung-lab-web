@@ -7,13 +7,17 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const content = (name) => readFileSync(join(root, name), 'utf8');
 
-test('추천 카드의 별표와 이동 링크는 독립된 레이아웃 영역을 갖는다',()=>{
-  assertStyle('.chat-result-card','grid-template-columns','minmax(0,1fr) 62px');
-  assertStyle('.chat-result-card .favorite-button','position','static');
-  assertStyle('.chat-result-card>a','border-right','0');
-  const jsx=content('components/tool-chat-home.tsx');
-  assert.match(jsx, /chat-result-open/);
-  assert.match(jsx, /<FavoriteButton slug=\{tool\.slug\}/);
+test('추천 카드의 별표와 이동 링크는 독립된 클릭 영역이며 빈 그리드 행이 없다',()=>{
+  const card=content('app/_components/chat/chat-tool-result-card.tsx');
+  const chat=content('components/tool-chat-home.tsx');
+  assert.match(card,/chat-result-card flex w-full min-w-0 shrink-0 items-center/);
+  assert.match(card,/<FavoriteButton slug=\{tool.slug\}/);
+  assert.match(card,/<Link[\s\S]*?href=\{`\/tools\/\$\{tool.slug\}`\}/);
+  assert.ok(card.indexOf('<FavoriteButton')<card.indexOf('<Link'));
+  assert.match(card,/chat-result-copy/);
+  assert.match(card,/chat-result-open/);
+  assert.doesNotMatch(card,/grid-template-columns|grid-column|grid-row/);
+  assert.match(chat,/chat-result-grid mt-4 flex/);
 });
 
 test('사이드바 접기와 펼치기는 실제 상태별 아이콘과 레이블을 변경한다', () => {

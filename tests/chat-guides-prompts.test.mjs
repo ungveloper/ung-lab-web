@@ -32,9 +32,9 @@ test('홈은 첫 입력 영역을 독립된 중앙 그룹으로 묶는다',()=>{
 });
 
 test('카드 왼쪽 별표 오른쪽 화살표가 독립된 클릭 표면을 가진다',()=>{
-  const jsx=src('components/tool-chat-home.tsx');
-  assertStyle('.chat-result-card','grid-template-columns','minmax(0,1fr) 62px');
-  assert.ok(jsx.indexOf('<FavoriteButton slug={tool.slug}')<jsx.indexOf('<Link href={`/tools/${tool.slug}`} aria-label='));
+  const card=src('app/_components/chat/chat-tool-result-card.tsx');
+  assert.match(card,/chat-result-card flex/);
+  assert.ok(card.indexOf('<FavoriteButton')<card.indexOf('<Link'));
 });
 
 test('가이드 목록, 상세 모두 사이드바 공유, 3열 및 검색',()=>{
