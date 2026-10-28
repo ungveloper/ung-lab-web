@@ -32,8 +32,14 @@ export default function ContactForm() {
         cache: "no-store",
       });
       if (!response.ok) {
+        const errorData: unknown = await response.json().catch(() => null);
+        const message = errorData && typeof errorData === "object" && "message" in errorData
+          && typeof errorData.message === "string" ? errorData.message : "문의 전송에 실패했습니다.";
+        const code = errorData && typeof errorData === "object" && "code" in errorData
+          && typeof errorData.code === "string" && /^CONTACT_[A-Z_]{1,50}$/.test(errorData.code)
+          ? ` (${errorData.code})` : "";
         setState("error");
-        setMessage("문의를 전송하지 못했습니다. 입력한 내용은 남아 있으니 잠시 후 다시 시도해 주세요.");
+        setMessage(`${message}${code} 입력 내용은 유지됩니다. 외부 문의 양식을 이용하거나 관리자에게 알려 주세요.`);
         return;
       }
       form.reset();

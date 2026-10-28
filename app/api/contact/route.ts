@@ -4,6 +4,25 @@ const noStore = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosnif
 const json = (message: string, status: number) => NextResponse.json({ message }, { status, headers: noStore });
 const richText = (value: string) => [{ type: "text", text: { content: value } }];
 
+// Only provider status and machine-readable error code are logged.
+// Never log tokens, Notion response messages, user inputs or page contents.
+async function notionFailure(stage: "schema" | "create", response: Response) {
+  let upstreamCode = "unknown";
+  try {
+    const detail: unknown = await response.json();
+    if (detail && typeof detail === "object" && "code" in detail && typeof detail.code === "string") {
+      upstreamCode = /^[a-z_]{1,64}$/.test(detail.code) ? detail.code : "other";
+    }
+  } catch { /* Provider returned non-JSON; do not expose it. */ }
+  console.error(`[contact:notion] stage=${stage} status=${response.status} code=${upstreamCode}`);
+  const code = stage === "schema" ? "CONTACT_SOURCE_UNAVAILABLE" : "CONTACT_WRITE_FAILED";
+  return NextResponse.json(
+    { message: "문의 서비스 연결에 문제가 발생했습니다. 잠시 후 외부 문의 양식을 이용해 주세요.", code },
+    { status: 502, headers: noStore },
+  );
+}
+
+
 type Property = { type?: string; status?: { options?: { name: string }[] } };
 
 type ContactInput = { name?: unknown; email?: unknown; subject?: unknown; message?: unknown; website?: unknown };
@@ -51,7 +70,7 @@ export async function POST(request: NextRequest) {
   const headers = { Authorization: `Bearer ${token}`, "Notion-Version": "2026-03-11", "Content-Type": "application/json" };
   try {
     const schemaResponse = await fetch(`https://api.notion.com/v1/data_sources/${dataSourceId}`, { headers, cache: "no-store", signal: AbortSignal.timeout(10000) });
-    if (!schemaResponse.ok) return json("문의 서비스를 일시적으로 이용할 수 없습니다.", 502);
+    if (!schemaResponse.ok) return notionFailure("schema", schemaResponse);
     const schema = await schemaResponse.json() as { properties?: Record<string, Property> };
     const available = schema.properties;
     if (!available) return json("문의 설정을 확인해 주세요.", 503);
@@ -78,9 +97,14 @@ export async function POST(request: NextRequest) {
       method: "POST", headers, cache: "no-store", signal: AbortSignal.timeout(10000),
       body: JSON.stringify({ parent: { type: "data_source_id", data_source_id: dataSourceId }, properties, children }),
     });
-    if (!res.ok) return json("문의 서비스 응답에 문제가 발생했습니다.", 502);
+    if (!res.ok) return notionFailure("create", res);
     return NextResponse.json({ ok: true }, { status: 201, headers: noStore });
-  } catch {
-    return json("잠시 후 다시 시도해 주세요.", 502);
+  } catch (error: unknown) {
+    const errorType = error instanceof Error && /^[A-Za-z]{1,40}$/.test(error.name) ? error.name : "unknown";
+    console.error(`[contact:notion] stage=network error_type=${errorType}`);
+    return NextResponse.json(
+      { message: "문의 서비스와 통신하지 못했습니다. 네트워크 상태를 확인해 주세요.", code: "CONTACT_NETWORK_ERROR" },
+      { status: 502, headers: noStore },
+    );
   }
 }
