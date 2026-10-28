@@ -25,8 +25,10 @@ test("정확히 일치하지 않는 기능 요청에는 무관한 추천 카드 
   assert.match(chat,/<ChatToolResultCard key=\{slug\} tool=\{tool\}\/>/);
 });
 
-test("기능 제안 문의 제목은 채팅 원문만 사용한다",()=>{
-  assert.equal(featureRequestSubject("햄버거 넣는 기능"),"햄버거 넣는 기능");
-  assert.equal(featureRequestSubject("PDF 파일 압축해줘"),"PDF 파일 압축해줘");
-  assert.equal(featureRequestSubject("가".repeat(180)),"가".repeat(120));
+test("기능 제안 문의 제목은 원문과 목적을 함께 표시한다",()=>{
+  assert.equal(featureRequestSubject("햄버거 만들기"),"햄버거 만들기 기능 추가 제안");
+  assert.equal(featureRequestSubject("PDF 파일 압축해줘"),"PDF 파일 압축해줘 기능 추가 제안");
+  const longTitle=featureRequestSubject("가".repeat(180));
+  assert.equal(longTitle.length,120);
+  assert.ok(longTitle.endsWith(" 기능 추가 제안"));
 });

@@ -13,10 +13,13 @@ test("새 채팅의 지원되지 않는 기능에는 제안이 표시되나 일�
   assert.equal(isFeatureRequestCandidate("QR 코드 생성"),true);
   for(const q of ["안녕","qqqppp","이미지","test"])assert.equal(isFeatureRequestCandidate(q),false,q);
 });
-test("기능 제안 제목에는 원문만 넣고 접미사를 붙이지 않는다",()=>{
-  assert.equal(featureRequestSubject("PDF 파일 압축해줘"),"PDF 파일 압축해줘");
+test("기능 제안 제목은 원문 뒤에 '기능 추가 제안'만 붙이고 120자를 넘지 않는다",()=>{
+  assert.equal(featureRequestSubject("햄버거 만들기"),"햄버거 만들기 기능 추가 제안");
+  assert.equal(featureRequestSubject("PDF 파일 압축해줘"),"PDF 파일 압축해줘 기능 추가 제안");
   const title=featureRequestSubject("가".repeat(500));
-  assert.equal(title,"가".repeat(120));
+  assert.equal(title.length,120);
+  assert.ok(title.endsWith(" 기능 추가 제안"));
+  assert.equal(featureRequestSubject("햄버거 만들기 기능 추가 제안"),"햄버거 만들기 기능 추가 제안");
   assert.doesNotMatch(featureRequestSubject("이미지 줄이기"),/기능 추가 요청|\[문의\]/);
 });
 test("문의 본문은 기능 맥락을 담되 수정 가능한 간략한 초안이다",()=>{
