@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import {clearPendingFeatureRequest,featureRequestMessage,featureRequestSubject,readPendingFeatureRequest} from "@/lib/feature-request.mjs";
 
 type State = "idle" | "sending" | "success" | "error";
 
@@ -11,6 +12,21 @@ const field = "mt-2 block w-full rounded-xl border border-slate-300 bg-white px-
 export default function ContactForm() {
   const [state, setState] = useState<State>("idle");
   const [message, setMessage] = useState("");
+  const [featureMode, setFeatureMode] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("type") !== "feature") return;
+    let pending;
+    try {pending = readPendingFeatureRequest(window.sessionStorage)} catch {return}
+    if (!pending || !formRef.current) return;
+    const subject = formRef.current.elements.namedItem("subject");
+    const message = formRef.current.elements.namedItem("message");
+    if (!(subject instanceof HTMLInputElement) || !(message instanceof HTMLTextAreaElement)) return;
+    subject.value = featureRequestSubject(pending.query);
+    message.value = featureRequestMessage(pending.query);
+    queueMicrotask(() => setFeatureMode(true));
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,10 +56,14 @@ export default function ContactForm() {
           && typeof errorData.code === "string" && /^CONTACT_[A-Z_]{1,50}$/.test(errorData.code)
           ? ` (${errorData.code})` : "";
         setState("error");
-        setMessage(`${message}${code} 입력 내용은 유지됩니다. 외부 문의 양식을 이용하거나 관리자에게 알려 주세요.`);
+        setMessage(`${message}${code} 입력 내용은 유지됩니다. 잠시 후 다시 시도해 주세요.`);
         return;
       }
       form.reset();
+      if (featureMode) {
+        try {clearPendingFeatureRequest(window.sessionStorage)} catch {/* Storage restricted. */}
+        setFeatureMode(false);
+      }
       setState("success");
       setMessage("");
       toast.success("문의가 정상적으로 접수되었습니다.", {
@@ -58,11 +78,15 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={submit} className="relative mt-5 space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+    <form ref={formRef} onSubmit={submit} className="relative mt-5 space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <label htmlFor="contact-website">Website</label>
         <input name="website" id="contact-website" tabIndex={-1} autoComplete="off" />
       </div>
+      {featureMode && <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-800" role="status">
+        <strong className="block font-semibold">기능 추가 요청</strong>
+        새 채팅에서 입력하신 요청을 제목과 내용에 미리 적었습니다. 필요한 세부 사항을 자유롭게 수정해 주세요.
+      </div>}
       <div>
         <label className="block text-[15px] font-semibold text-slate-800" htmlFor="contact-name">성함 또는 닉네임 <span className="text-red-600">*</span></label>
         <input className={field} id="contact-name" name="name" type="text" maxLength={80} required autoComplete="name" placeholder="이름 또는 닉네임을 입력해 주세요" />

@@ -11,7 +11,7 @@ test("문의 페이지는 iframe을 사용하지 않고 브라우저 네이티�
   assert.match(page, /ContactForm/);
   assert.match(page, /href="\/guides"/);
   assert.match(page, /href="\/privacy"/);
-  assert.match(page, /NOTION_FORM_LINK/);
+  assert.doesNotMatch(page, /NOTION_FORM_LINK|jealous-growth-583|notion\.site|target="_blank"/);
   assert.doesNotMatch(page, /<iframe/);
   assert.match(form, /<form/);
   assert.match(form, /fetch\("\/api\/contact"/);

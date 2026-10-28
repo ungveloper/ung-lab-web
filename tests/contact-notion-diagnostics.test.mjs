@@ -11,11 +11,12 @@ test("Notion 실패는 schema/create 단계를 구분하고 사용자 비밀 정
   assert.match(source,/CONTACT_NETWORK_ERROR/);
   assert.doesNotMatch(source,/console\.(?:log|error)\([^\n]*(?:token|body|email|name|subject|message)/i);
 });
-test("문의 화면은 서버가 반환한 안전한 실패 코드와 외부 양식 안내를 사용한다",()=>{
+test("문의 화면은 서버의 안전한 실패 코드를 사용하고 내부 재시도만 안내한다",()=>{
   const source=read("components/contact-form.tsx");
   assert.match(source,/response\.json\(\)\.catch/);
   assert.match(source,/CONTACT_\[A-Z_\]/);
-  assert.match(source,/외부 문의 양식/);
+  assert.match(source,/입력 내용은 유지됩니다\. 잠시 후 다시 시도해 주세요/);
+  assert.doesNotMatch(source,/외부 문의 양식|notion\.site/);
   assert.match(source,/setState\("success"\)/);
 });
 test("진단 명령은 Notion 데이터 소스 조회만 수행하고 쓰기 요청을 하지 않는다",()=>{

@@ -10,10 +10,6 @@ export const metadata = {
   alternates: { canonical: "/contact" },
 };
 
-const NOTION_FORM_LINK = "https://jealous-growth-583.notion.site/34f7f0af97c2800aa222d3faf6e6443b?pvs=105";
-
-
-
 export default function Page() {
   const isConnected = Boolean(process.env.NOTION_API_TOKEN && process.env.NOTION_DATA_SOURCE_ID);
   return <SiteInfoLayout
@@ -28,21 +24,13 @@ export default function Page() {
   >
     <PageSection id="contact-form" title="문의 양식 작성하기">
       <PageParagraph>성함 또는 닉네임, 답변받을 이메일과 문의 내용을 입력해 주세요.</PageParagraph>
-                {isConnected ? (
-                  <ContactForm />
-                ) : (
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6">
-                    <PageParagraph>현재 사이트 내 문의 접수 준비 중입니다. 아래 버튼으로 문의 양식을 열어 작성해 주세요.</PageParagraph>
-                    <a className={PAGE_LINK_CLASSES} href={NOTION_FORM_LINK} target="_blank" rel="noopener noreferrer">
-                      문의 양식 열기
-                    </a>
-                  </div>
-                )}
-                {isConnected && (
-                  <PageParagraph>
-                    사이트에서 제출하기 어렵다면 <a className={PAGE_LINK_CLASSES} href={NOTION_FORM_LINK} target="_blank" rel="noopener noreferrer">문의 양식을 새 창에서 열어 작성</a>할 수 있습니다.
-                  </PageParagraph>
-                )}
+      {isConnected ? (
+        <ContactForm />
+      ) : (
+        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6" role="status">
+          <PageParagraph>현재 문의 접수를 준비 중입니다. 잠시 후 다시 이용해 주세요.</PageParagraph>
+        </div>
+      )}
     </PageSection>
     <PageSection id="contact-help" title="이런 내용을 적어 주세요">
       <ul className="mb-4 list-disc space-y-2 pl-6 text-[15px] leading-8 text-slate-600">
@@ -53,7 +41,7 @@ export default function Page() {
                 <PageParagraph>기본 사용법은 <Link className={PAGE_LINK_CLASSES} href="/guides">사용 가이드</Link>에서도 확인할 수 있습니다.</PageParagraph>
     </PageSection>
     <PageSection id="contact-privacy" title="개인정보 안내">
-      <PageParagraph>제출한 이름·닉네임, 이메일 및 문의 내용은 문의 확인을 위해 Notion 데이터베이스에 저장됩니다. 원본 파일, 비밀번호, 주민등록번호 등 민감한 내용은 적지 마세요. 외부 문의 양식으로 이동하면 Notion이 접속 관련 정보를 별도로 처리할 수 있습니다.</PageParagraph>
+      <PageParagraph>제출한 이름·닉네임, 이메일 및 문의 내용은 문의 확인을 위해 Notion 데이터베이스에 저장됩니다. 원본 파일, 비밀번호, 주민등록번호 등 민감한 내용은 적지 마세요.</PageParagraph>
                 <PageParagraph><Link className={PAGE_LINK_CLASSES} href="/privacy">개인정보 처리방침</Link>에서 자세한 안내를 확인할 수 있습니다.</PageParagraph>
     </PageSection>
   </SiteInfoLayout>;

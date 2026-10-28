@@ -17,7 +17,7 @@ async function notionFailure(stage: "schema" | "create", response: Response) {
   console.error(`[contact:notion] stage=${stage} status=${response.status} code=${upstreamCode}`);
   const code = stage === "schema" ? "CONTACT_SOURCE_UNAVAILABLE" : "CONTACT_WRITE_FAILED";
   return NextResponse.json(
-    { message: "문의 서비스 연결에 문제가 발생했습니다. 잠시 후 외부 문의 양식을 이용해 주세요.", code },
+    { message: "문의 서비스 연결에 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.", code },
     { status: 502, headers: noStore },
   );
 }
