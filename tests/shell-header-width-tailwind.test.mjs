@@ -24,17 +24,15 @@ test("사이드바 로고와 공통 상단바는 Tailwind 64px 행으로 맞춘�
   assert.match(tool, /tool-app-topbar h-16! min-h-16!/);
 });
 
-test("모든 공개 페이지와 목록·가이드는 1040px Tailwind 프레임을 공유한다", () => {
-  const frame = read("components/app-content-container.tsx");
-  const contact = read("app/(workspace)/contact/page.tsx");
-  assert.match(frame, /pageFrame=Element==="main"/);
-  assert.match(frame, /max-w-\[1040px\]!/);
-  assert.match(frame, /chat-browse-content/);
-  assert.doesNotMatch(contact, /max-w-\[780px\]/);
-  for (const name of [
-    "app/(workspace)/about/page.tsx", "app/(workspace)/contact/page.tsx",
-    "app/(workspace)/privacy/page.tsx", "app/(workspace)/terms/page.tsx",
-    "components/guide-browser.tsx", "app/(workspace)/guides/[slug]/page.tsx"
-  ]) assert.match(read(name), /<AppContentContainer as="main"/, name);
-  assert.match(read("components/tool-browse-page.tsx"), /className="chat-browse-content"/);
+test("모든 공개 페이지와 목록·가이드는 같은 1040px 페이지 프레임을 사용한다", () => {
+  const frame = read("app/_components/common/page-frame.tsx");
+  assert.match(frame,/max-w-\[1040px\]/);
+  assert.match(frame,/px-5 pt-10 pb-28 md:px-8 md:pt-12/);
+  const info = read("app/_components/site-info/site-info-layout.tsx");
+  assert.match(info, /<PageFrame>/);
+  for(const name of ["about","contact","privacy","terms"])
+    assert.match(read(`app/(workspace)/${name}/page.tsx`), /<SiteInfoLayout/);
+  assert.match(read("components/guide-browser.tsx"),/<PageFrame/);
+  assert.match(read("app/(workspace)/guides/[slug]/page.tsx"),/<PageFrame/);
+  assert.match(read("components/tool-browse-page.tsx"),/<PageFrame as="div"/);
 });

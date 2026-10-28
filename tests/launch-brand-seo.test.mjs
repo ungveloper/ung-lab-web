@@ -7,7 +7,7 @@ test("공통 레이아웃: 소개·문의·개인정보·약관은 workspace 아
  for(const p of ["about","contact","privacy","terms"]){
    assert.ok(fs.existsSync(fileURLToPath(new URL(`../app/(workspace)/${p}/page.tsx`,import.meta.url))));
    assert.ok(!fs.existsSync(fileURLToPath(new URL(`../app/${p}/page.tsx`,import.meta.url))));
-   assert.match(r(`app/(workspace)/${p}/page.tsx`),/SiteInfoBackButton/);
+   assert.match(r(`app/(workspace)/${p}/page.tsx`),/SiteInfoLayout/);
  }
 });
 test("720:166 비율의 원본 로고와 PNG 아이콘",()=>{
@@ -24,6 +24,6 @@ test("Google / Naver 인증과 robots 출시 게이트 보존",()=>{
  assert.match(r("app/sitemap.ts"),/NEXT_PUBLIC_LAUNCH_READY/);
 });
 test("내비게이션과 로고의 접근성",()=>{
- assert.match(r("components/site-info-back-button.tsx"),/href="\/"/);
+ assert.match(r("app/_components/common/page-back-link.tsx"),/href = "\/"/);
  assert.match(r("components/app-sidebar.tsx"),/alt="웅이연구소"/);
 });

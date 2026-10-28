@@ -7,7 +7,7 @@ test("문의 페이지는 iframe을 사용하지 않고 브라우저 네이티�
   const page = read("app/(workspace)/contact/page.tsx");
   const form = read("components/contact-form.tsx");
   assert.match(page, /canonical:\s*"\/contact"/);
-  assert.match(page, /SiteInfoBackButton/);
+  assert.match(page, /SiteInfoLayout/);
   assert.match(page, /ContactForm/);
   assert.match(page, /href="\/guides"/);
   assert.match(page, /href="\/privacy"/);
@@ -31,12 +31,13 @@ test("문의 API는 인증 토큰을 서버에서만 쓰고 외부에 유출하�
   assert.doesNotMatch(api, /NEXT_PUBLIC_NOTION/);
 });
 
-test("문의 화면은 Tailwind 클래스로 스타일링하고 기존 iframe 스크롤을 사용하지 않는다", () => {
-  const page = read("app/(workspace)/contact/page.tsx");
-  const form = read("components/contact-form.tsx");
-  const tailwind = read("app/tailwind.css");
-  assert.match(page, /text-slate-900/);
-  assert.match(form, /rounded-xl/);
-  assert.match(tailwind, /tailwindcss\/utilities\.css/);
-  assert.doesNotMatch(page, /NOTION_FORM_EMBED|scrolling="no"|site-info-contact-form-iframe/);
+test("문의 화면은 Tailwind 클래스로 스타일링하고 기존 iframe 스크롤을 사용하지 않는다",()=>{
+  const page=read("app/(workspace)/contact/page.tsx");
+  const form=read("components/contact-form.tsx");
+  const tw=read("app/tailwind.css");
+  assert.match(read("app/_components/common/page-header.tsx"),/text-text-primary/);
+  assert.match(form,/rounded-xl/);
+  assert.match(tw,/@import "tailwindcss"/);
+  assert.doesNotMatch(page,/NOTION_FORM_EMBED|scrolling="no"|site-info-contact-form-iframe/);
 });
+

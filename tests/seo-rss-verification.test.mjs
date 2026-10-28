@@ -5,11 +5,11 @@ import fs from "node:fs";
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("정보 페이지 뒤로가기는 무조건 홈으로 이동", () => {
-  const source = read("components/site-info-back-button.tsx");
-  assert.match(source, /href="\/"/);
+  const source = read("app/_components/common/page-back-link.tsx");
+  assert.match(source, /href = "\/"/);
   assert.doesNotMatch(source, /router\.back\(|router\.push\("\/tools"\)/);
   for (const page of ["about", "privacy", "terms", "contact"]) {
-    assert.match(read(`app/(workspace)/${page}/page.tsx`), /SiteInfoBackButton/);
+    assert.match(read(`app/(workspace)/${page}/page.tsx`), /SiteInfoLayout/);
   }
 });
 
@@ -50,10 +50,10 @@ test("정책·문의·소개 페이지에 실제 내용과 canonical을 제공",
   for (const page of ["about", "privacy", "terms", "contact"]) {
     const source = read(`app/(workspace)/${page}/page.tsx`);
     assert.match(source, /canonical/);
-    assert.match(source, /<h1(?:\s[^>]*)?>/);
-    // Headings may have an ID so section navigation and aria-labelledby work.
-    assert.match(source, /<h2\b[^>]*>/);
-    assert.match(source, /<h2\s+id="[^"]+"/);
+    assert.match(source, /<SiteInfoLayout/);
+    assert.match(source, /<PageSection id=/);
+    assert.match(read("app/_components/common/page-header.tsx"), /<h1/);
+    assert.match(read("app/_components/common/page-section.tsx"), /<h2/);
   }
   assert.match(read("app/(workspace)/privacy/page.tsx"), /ung-lab-visited-tools/);
   assert.match(read("app/(workspace)/privacy/page.tsx"), /Google AdSense/);

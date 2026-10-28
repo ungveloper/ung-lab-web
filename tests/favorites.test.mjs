@@ -37,7 +37,9 @@ test("모든 도구 카드와 상세·카테고리에서 별표를 사용할 수
   const detail = readFileSync(join(root, "app/tools/[slug]/page.tsx"), "utf8");
   const category = readFileSync(join(root, "app/category/[slug]/page.tsx"), "utf8");
   assert.match(cards, /즐겨찾는 도구/);
-  for (const source of [cards, detail, category]) assert.match(source, /FavoriteButton/);
+  assert.match(cards, /ToolGrid/);
+  assert.match(readFileSync(join(root, "app/_components/tools/tool-card.tsx"), "utf8"), /FavoriteButton/);
+  for (const source of [detail, category]) assert.match(source, /FavoriteButton/);
   const button = readFileSync(join(root, "components/favorite-button.tsx"), "utf8");
   assert.match(button, /aria-pressed/);
 });

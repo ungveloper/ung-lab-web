@@ -1,3 +1,4 @@
+import { assertStyle } from "./_tailwind-contract.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
@@ -11,7 +12,7 @@ test("All tools is an independent route and uses the common app list shell",()=>
   assert.match(page,/export default function Page/);
   assert.match(page,/<ToolBrowsePage\/>/);
   assert.doesNotMatch(directory,/<AppListShell/);
-  assert.match(directory,/<AppContentContainer className="chat-browse-content">/);
+  assert.match(directory,/<PageFrame as="div" className="chat-browse-content"/);
   assert.match(shell,/<AppSidebar mode=\{mode\}/);
   assert.match(read("app/(workspace)/layout.tsx"),/<WorkspaceShell>/);
 });
@@ -38,7 +39,7 @@ test("Direct tool navigation returns to standalone all-tools route",()=>{
 test("Directory reuses Supabase and popularity sources, keeping local fallback",()=>{
   const directory=read("components/tool-browse-page.tsx");
   for(const part of ["/api/tool-catalog","/api/tool-popularity","popularitySlugs","useState<Tool[]>(tools)"]) assert.ok(directory.includes(part),part);
-  const css=read("app/chat.css");
-  assert.match(css,/\.app-content-container\{--app-content-max-width:1040px/);
-  assert.match(css,/\.tools-app-shell \.chat-browse-page\{/);
+  assertStyle('.app-content-container','--app-content-max-width','1040px');
+  assert.match(directory, /overflow-y-auto/);
 });
+

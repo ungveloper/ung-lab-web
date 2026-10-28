@@ -1,3 +1,4 @@
+import { assertStyle } from "./_tailwind-contract.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -34,8 +35,7 @@ test('Next.js 버전과 lockfile은 16.4.3으로 함께 고정됨',()=>{
  assert.equal(lock.packages['node_modules/next']?.version,'16.4.3');
 });
 test('기능 아이콘을 무조건 삭제하지 않음',()=>{
- const brand=read('components/brand-identity.tsx');
- assert.match(brand,/BrandSymbol/);
- const css=read('app/chat.css');
- assert.match(css,/brand-hero-wordmark/);
+  assert.match(read('components/brand-identity.tsx'),/BrandSymbol/);
+  assertStyle('.brand-wordmark','aspect-ratio','720/166');
 });
+

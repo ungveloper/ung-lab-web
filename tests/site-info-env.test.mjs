@@ -1,3 +1,4 @@
+import { assertOnlyTailwindStylesheet } from "./_tailwind-contract.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -24,20 +25,21 @@ test("환경변수 샘플은 Git에 추적하며 로컬 실제 설정은 제외�
   assert.match(env, /NEXT_PUBLIC_ADSENSE_ENABLED=false/);
 });
 
-test("정보 페이지는 한결같은 본문 계층과 목차, 접근 가능한 섹션을 갖는다", () => {
-  for (const page of pages) {
-    const content = src(`app/(workspace)/${page}/page.tsx`);
-    assert.match(content, /SiteInfoBackButton/);
-    assert.match(content, /site-info-article/);
-    assert.match(content, /site-info-hero/);
-    assert.match(content, /site-info-lead/);
-    assert.match(content, /site-info-toc/);
-    assert.match(content, /<article/);
-    assert.match(content, /<section[^>]*className="site-info-section/);
-    const ids = [...content.matchAll(/<section[^>]*id="([^"]+)"[^>]*className="site-info-section[^"]*"|<section[^>]*className="site-info-section[^"]*"[^>]*id="([^"]+)"/g)].map(m => m[1] || m[2]);
-    assert.ok(ids.length >= 3, `${page}: 내용 섹션 부족`);
-    assert.equal(ids.length, new Set(ids).size, `${page}: 중복 id`);
-    for (const id of ids) assert.ok(content.includes(`href="#${id}"`), `${page}: 목차 연결 없음: ${id}`);
+test("정보 페이지는 공통 페이지 템플릿, 목차, 접근 가능한 섹션을 공유한다", () => {
+  const layout=src("app/_components/site-info/site-info-layout.tsx");
+  assert.match(layout, /<PageFrame>/);
+  assert.match(layout, /<PageBackLink \/>/);
+  assert.match(layout, /<PageHeader/);
+  assert.match(layout, /<PageToc/);
+  const section=src("app/_components/common/page-section.tsx");
+  assert.match(section, /aria-labelledby=\{`\$\{id\}-title`\}/);
+  for(const page of pages){
+    const content=src(`app/(workspace)/${page}/page.tsx`);
+    assert.match(content, /<SiteInfoLayout/);
+    const ids=[...content.matchAll(/<PageSection id="([^"]+)"/g)].map(m=>m[1]);
+    assert.ok(ids.length>=3, `${page}: missing sections`);
+    assert.equal(ids.length,new Set(ids).size, `${page}: duplicated sections`);
+    for(const id of ids)assert.ok(content.includes(`href: "#${id}"`), `${page}: missing TOC entry ${id}`);
   }
 });
 
@@ -51,12 +53,13 @@ test("약관·개인정보의 기능 설명과 광고 고지는 유지한다", (
   assert.doesNotMatch(src("app/(workspace)/contact/page.tsx"), /<iframe/);
 });
 
-test("정보 페이지 전용 CSS는 읽기 편한 본문과 모바일 여백, 키보드 포커스를 지원한다", () => {
-  const styles = src("app/site-info.css");
-  assert.match(src("app/layout.tsx"), /\.\/site-info\.css/);
-  assert.match(styles, /\.app-content-container\.content-page\.site-info-page/);
-  assert.match(styles, /\.site-info-section p\{[^}]*line-height:2/);
-  assert.match(styles, /@media\(max-width:720px\)/);
-  assert.match(styles, /focus-visible/);
-  assert.match(styles, /word-break:keep-all/);
+test("정보 페이지는 Tailwind 유틸리티로 본문 여백·가독성·포커스를 통일한다",()=>{
+  assertOnlyTailwindStylesheet();
+  const frame=src("app/_components/common/page-frame.tsx");
+  const section=src("app/_components/common/page-section.tsx");
+  const link=src("app/_components/common/page-back-link.tsx");
+  assert.match(frame,/px-5.*md:px-8/);
+  assert.match(section,/leading-8/);
+  assert.match(section,/break-keep/);
+  assert.match(link,/focus-visible:outline-2/);
 });

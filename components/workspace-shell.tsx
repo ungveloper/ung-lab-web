@@ -38,20 +38,20 @@ export function WorkspaceShell({children}:{children:ReactNode}){
     if(segment!==null)router.push("/");
   },[segment,router]);
 
-  return <div className={`guides-app-shell workspace-shell${collapsed?" chat-home--compact":""}`}>
+  return <div className={`${`guides-app-shell workspace-shell${collapsed?" chat-home--compact":""}`} [--chat-sidebar:#f9f9f9] flex min-h-[100dvh] bg-[#fff] text-[#202123] h-[100dvh] font-[Arial,"Apple_SD_Gothic_Neo","Malgun_Gothic",sans-serif] max-[720px]:h-[100dvh]`}>
     <AppSidebar mode={mode} catalog={catalog} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}
       collapsed={collapsed} setCollapsed={setCollapsed} onNewChat={newChat}/>
-    <div className="chat-main workspace-main">
-      <header className="chat-topbar workspace-topbar h-16! min-h-16!">
-        <button type="button" className="chat-menu-button" aria-label="메뉴 열기" onClick={()=>setMobileOpen(true)}><Menu size={22}/></button>
-        {mode==="chat"?<Link href={informationPage?pathname:"/"} className="guide-top-title">
+    <div className={`chat-main workspace-main flex-1 min-w-0 flex flex-col h-[100dvh] max-[720px]:h-[100dvh] [.tool-app-shell_&]:min-w-0 min-h-0`}>
+      <header className={`chat-topbar workspace-topbar h-16! min-h-16! h-16 flex items-center gap-[9px] [padding:0_28px] [flex-shrink:0] max-[720px]:h-[58px] max-[720px]:[padding:0_15px] max-[720px]:gap-1 [border-bottom:1px_solid_#edf0f4]`}>
+        <button type="button" className={`chat-menu-button border-0 bg-[transparent] p-2 text-[#5c6270] hover:bg-[#eceef3] hover:rounded-[8px] hidden max-[720px]:inline-flex`} aria-label="메뉴 열기" onClick={()=>setMobileOpen(true)}><Menu size={22}/></button>
+        {mode==="chat"?<Link href={informationPage?pathname:"/"} className={`guide-top-title inline-flex items-center gap-[9px] text-base font-[740] text-[#334155]`}>
             <HeadingIcon size={18} aria-hidden="true"/> {informationPage?.label??"새 대화"}
           </Link>:
-          <Link href={mode==="browse"?"/tools":"/guides"} className="guide-top-title">
+          <Link href={mode==="browse"?"/tools":"/guides"} className={`guide-top-title inline-flex items-center gap-[9px] text-base font-[740] text-[#334155]`}>
             {mode==="browse"?<LayoutGrid size={18}/>:<BookOpen size={18}/>} {mode==="browse"?"모든 기능 보기":"사용 가이드"}
           </Link>}
       </header>
-      <div className={`workspace-page-body${mode==="chat"?" workspace-page-body--chat":""}`}>
+      <div className={`workspace-page-body flex min-h-0 min-w-0 flex-1 flex-col ${mode === "chat" && !informationPage ? "overflow-hidden" : "overflow-y-auto"} overscroll-contain`}>
         {children}
       </div>
     </div>

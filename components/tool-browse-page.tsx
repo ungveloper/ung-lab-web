@@ -2,7 +2,8 @@
 
 import {useEffect,useState,type MouseEvent} from "react";
 import {tools,type Tool} from "@/lib/tools";
-import {AppContentContainer} from "@/components/app-content-container";
+import {PageFrame} from "@/app/_components/common/page-frame";
+import {PageHeader} from "@/app/_components/common/page-header";
 import {ToolExplorer} from "@/components/tool-explorer";
 import {saveToolReturn} from "@/lib/recent-tools-state.mjs";
 import {popularitySlugs} from "@/lib/tool-fallback.mjs";
@@ -33,10 +34,10 @@ export function ToolBrowsePage(){
     const slug=/^\/tools\/([a-z0-9-]+)(?:[?#]|$)/.exec(href)?.[1];
     if(slug)saveToolReturn(slug,"/tools");
   }
-  return <main className="chat-browse-page" aria-label="모든 기능 보기" onClickCapture={captureToolNavigation}>
-      <AppContentContainer className="chat-browse-content">
-        <div className="chat-browse-heading"><h1>모든 기능 보기</h1></div>
-        <ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(tool=>tool.slug))}/>
-      </AppContentContainer>
+  return <main className="min-h-0 w-full flex-1 overflow-y-auto" aria-label="모든 기능 보기" onClickCapture={captureToolNavigation}>
+    <PageFrame as="div" className="chat-browse-content">
+      <PageHeader title="모든 기능 보기" description="PDF·이미지·문서 도구를 찾아 바로 사용하세요."/>
+      <ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(tool=>tool.slug))}/>
+    </PageFrame>
   </main>;
 }
