@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type State = "idle" | "sending" | "success" | "error";
 
@@ -31,7 +32,7 @@ export default function ContactForm() {
         body: JSON.stringify(payload),
         cache: "no-store",
       });
-      if (!response.ok) {
+      if (response.status !== 201) {
         const errorData: unknown = await response.json().catch(() => null);
         const message = errorData && typeof errorData === "object" && "message" in errorData
           && typeof errorData.message === "string" ? errorData.message : "문의 전송에 실패했습니다.";
@@ -44,7 +45,12 @@ export default function ContactForm() {
       }
       form.reset();
       setState("success");
-      setMessage("문의가 정상적으로 접수되었습니다. 보내주셔서 감사합니다.");
+      setMessage("");
+      toast.success("문의가 정상적으로 접수되었습니다.", {
+        id: "ung-lab-contact-submitted",
+        description: "보내주셔서 감사합니다.",
+        duration: 5000,
+      });
     } catch {
       setState("error");
       setMessage("네트워크 연결을 확인하고 다시 시도해 주세요.");

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { Github, ShieldCheck } from "lucide-react";
 import "./tailwind.css";
+import { AppToaster } from "@/app/_components/common/app-toaster";
 
 const publisher = process.env.ADSENSE_PUBLISHER_ID?.trim() ?? "";
 const hasPublisher = /^ca-pub-\d{16}$/.test(publisher);
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         {children}
+        <AppToaster />
         <footer className={`site-footer bg-[#f9fafc] [border-top:1px_solid_#e9ecf2] [padding:48px_0_0] [&_p]:text-sm [&_p]:text-[#8b96a6] [&_p]:leading-[1.9] [&_p]:[margin:14px_0] [&_h3]:text-[15px] [&_h3]:[margin:0_0_14px] [&_a]:flex [&_a]:items-center [&_a]:gap-[5px] [&_a]:text-sm [&_a]:text-[#8792a3] [&_a]:mb-[9px] print:!hidden`}>
           <div className={`site-width foot-grid w-[min(1240px,calc(100%_-_48px))] [margin-inline:auto] [.hero_&]:relative [.hero_&]:z-1 grid [grid-template-columns:2fr_1fr_1fr] gap-10 max-[900px]:[grid-template-columns:2fr_1fr_1fr] max-[600px]:w-[min(100%_-_32px,1240px)] max-[600px]:[grid-template-columns:1fr_1fr] max-[600px]:gap-5 max-[600px]:[&>div:first-child]:[grid-column:1/-1] print:w-full print:m-0 print:p-0 [.tool-page-scroll>__&.tool-page]:w-[min(1100px,calc(100%_-_64px))] [.tool-page-scroll>__&.tool-page]:[margin-inline:auto] [.tool-page-scroll>__&.tool-page]:pt-5 [.tool-page-scroll>__&.tool-page]:pb-[100px] max-[1050px]:[.tool-page-scroll>__&.tool-page]:w-[min(100%_-_40px,1100px)] max-[720px]:[.tool-page-scroll>__&.tool-page]:w-[calc(100%_-_26px)] max-[720px]:[.tool-page-scroll>__&.tool-page]:pt-[18px] max-[720px]:[.tool-page-scroll>__&.tool-page]:pb-[75px]`}>
             <div>
