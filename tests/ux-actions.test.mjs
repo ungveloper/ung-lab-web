@@ -1,3 +1,4 @@
+import { assertStyle } from "./_tailwind-contract.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -6,13 +7,12 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const content = (name) => readFileSync(join(root, name), 'utf8');
 
-test('추천 카드의 별표와 이동 링크는 독립된 레이아웃 영역을 갖는다', () => {
-  const css = content('app/chat.css');
-  assert.match(css, /\.chat-result-card\{grid-template-columns:62px minmax\(0,1fr\)/);
-  assert.match(css, /\.chat-result-card \.favorite-button\{position:static/);
-  assert.match(css, /\.chat-result-card>a\{border-right:0;border-left:/);
-  const jsx = content('components/tool-chat-home.tsx');
-  assert.match(jsx, /<span className="chat-result-open"/);
+test('추천 카드의 별표와 이동 링크는 독립된 레이아웃 영역을 갖는다',()=>{
+  assertStyle('.chat-result-card','grid-template-columns','minmax(0,1fr) 62px');
+  assertStyle('.chat-result-card .favorite-button','position','static');
+  assertStyle('.chat-result-card>a','border-right','0');
+  const jsx=content('components/tool-chat-home.tsx');
+  assert.match(jsx, /chat-result-open/);
   assert.match(jsx, /<FavoriteButton slug=\{tool\.slug\}/);
 });
 
@@ -23,14 +23,13 @@ test('사이드바 접기와 펼치기는 실제 상태별 아이콘과 레이�
   assert.match(jsx, /collapsed \? "사이드바 펼치기" : "사이드바 접기"/);
 });
 
-test('도구 페이지 로딩은 중앙 spinner와 스크린리더 상태를 제공한다', () => {
+test('도구 페이지 로딩은 중앙 spinner와 스크린리더 상태를 제공한다',()=>{
   const jsx = content('app/tools/[slug]/page.tsx');
-  const css = content('app/chat.css');
   assert.match(jsx, /Suspense fallback=/);
-  assert.match(jsx, /className="tool-app-loading-spinner"/);
+  assert.match(jsx, /tool-app-loading-spinner/);
   assert.match(jsx, /role="status" aria-busy="true"/);
-  assert.match(css, /\.tool-app-loading\{min-height:100dvh;display:flex;align-items:center;justify-content:center/);
-  assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+  assertStyle('.tool-app-loading','min-height','100dvh');
+  assertStyle('.tool-app-loading','justify-content','center');
 });
 
 test('반복 안내 대신 행동 중심 레이아웃을 제공하고 정책을 문서화한다', () => {

@@ -7,5 +7,5 @@ export function BrandLogo({className = ""}: {className?:string}) {
 /** Compact identity icon uses the supplied favicon. Not a Lucide flask. */
 export function BrandSymbol({size=22}: {size?:number}) {
   return <Image src="/android-chrome-192x192.png" alt="" aria-hidden="true"
-    width={size} height={size} className="brand-symbol-image" style={{width:size,height:size}} unoptimized />;
+    width={size} height={size} className={`brand-symbol-image inline-block [flex-shrink:0] w-[var(--brand-symbol-size,22px)] h-[var(--brand-symbol-size,22px)] object-contain [vertical-align:middle]`} style={{width:size,height:size}} unoptimized />;
 }

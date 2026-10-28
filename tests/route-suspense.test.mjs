@@ -20,7 +20,8 @@ test('Next.js 16 dynamic pages await params inside Suspense children', () => {
   }
 });
 
-test('smooth scrolling is declared in root html to let Next manage navigation', () => {
+test('smooth scrolling is declared in root html to let Next manage navigation',()=>{
   const source = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-  assert.match(source, /<html lang="ko" data-scroll-behavior="smooth">/);
+  assert.match(source, /<html lang="ko" data-scroll-behavior="smooth"/);
 });
+

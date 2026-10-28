@@ -36,5 +36,5 @@ test("모든 공개 페이지와 목록·가이드는 1040px Tailwind 프레임�
     "app/(workspace)/privacy/page.tsx", "app/(workspace)/terms/page.tsx",
     "components/guide-browser.tsx", "app/(workspace)/guides/[slug]/page.tsx"
   ]) assert.match(read(name), /<AppContentContainer as="main"/, name);
-  assert.match(read("components/tool-browse-page.tsx"), /className="chat-browse-content"/);
+  assert.match(read("components/tool-browse-page.tsx"), /className=\{`chat-browse-content/);
 });

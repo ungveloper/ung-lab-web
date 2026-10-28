@@ -140,10 +140,10 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
   const maxWidth = dimensions ? Math.min(620, Math.max(80, Math.round(470 * dimensions.width / dimensions.height))) : 600;
   const dimensionsNote = rect && dimensions ? `${Math.max(1, Math.round(rect.w * dimensions.width))} × ${Math.max(1, Math.round(rect.h * dimensions.height))} px` : "";
   return (
-    <div className="crop-preview">
-      <div className="crop-preview-heading">
+    <div className={`crop-preview [margin:13px_0] [border:1px_solid_#e1eaf7] p-[13px] rounded-[11px] [&_b]:text-[15px] [&_p]:text-[13px] [&_p]:text-[#8292a8] [&_small]:text-[13px] [&_small]:text-[#8292a8] [margin:16px_0_20px] p-[15px] rounded-[12px] [&_p]:text-sm [&_p]:leading-[1.55] [&_p]:text-[#6b798f] [&_p]:[margin:5px_0_13px]`}>
+      <div className={`crop-preview-heading flex justify-between items-center gap-3 [&_b]:text-base [&_button]:whitespace-nowrap`}>
         <b>이미지 자르기</b>
-        <button type="button" className="small-ghost" onClick={() => {
+        <button type="button" className={`small-ghost inline-flex items-center gap-[6px] bg-[transparent] border-0 text-[#3870db] text-sm font-bold p-[6px]`} onClick={() => {
           onStart();
           onChange({ cropX: 0, cropY: 0, cropWidth: 100, cropHeight: 100 });
           onEnd();
@@ -153,7 +153,7 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
       {loadError && <p role="alert">{loadError}</p>}
       <div
         ref={stageRef}
-        className="crop-stage"
+        className={`crop-stage relative [margin:12px_auto] max-w-full bg-[repeating-conic-gradient(#fff_0_25%,#eef1f7_0_50%)_50%/18px_18px] [border:1px_solid_#c6d5ec] rounded-[6px] overflow-hidden [touch-action:none] select-none [-webkit-user-select:none] [overscroll-behavior:contain] [cursor:crosshair]`}
         style={{ width: `min(100%, ${maxWidth}px)`, aspectRatio: dimensions ? `${dimensions.width} / ${dimensions.height}` : "4 / 3" }}
         role="group"
         aria-label="이미지 자르기 영역 편집"
@@ -163,9 +163,9 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
         onPointerCancel={finishPointer}
         onLostPointerCapture={() => { if (dragRef.current) { dragRef.current = null; onEnd(); } }}
       >
-        <canvas ref={canvasRef} className="crop-stage-image" aria-hidden="true" />
+        <canvas ref={canvasRef} className={`crop-stage-image absolute [inset:0] block w-full h-full pointer-events-none`} aria-hidden="true" />
         {rect && <div
-          className="crop-selection"
+          className={`crop-selection absolute [border:2px_solid_#2563eb] bg-[rgba(37,99,235,.07)] shadow-[0_0_0_9999px_rgba(10,25,47,.40)] [cursor:move] [touch-action:none] [outline-offset:3px] min-w-px min-h-px focus-visible:[outline:3px_solid_#2563eb]`}
           data-crop-selection="true"
           tabIndex={0}
           role="group"
@@ -173,10 +173,10 @@ export function CropPreview({ file, settings, onChange, onStart, onEnd }: {
           onKeyDown={keyboardMove}
           style={{ left: percent(rect.x), top: percent(rect.y), width: percent(rect.w), height: percent(rect.h) }}
         >
-          {(["nw", "ne", "sw", "se"] as const).map((corner) => <span key={corner} data-crop-handle={corner} className={`crop-handle crop-handle-${corner}`} aria-hidden="true" />)}
+          {(["nw", "ne", "sw", "se"] as const).map((corner) => <span key={corner} data-crop-handle={corner} className={`${`crop-handle crop-handle-${corner}`} absolute w-[18px] h-[18px] [border:2px_solid_#2563eb] rounded-[5px] bg-[white] shadow-[0_1px_5px_#0004] [touch-action:none] z-3 left-[-10px] top-[-10px] [cursor:nwse-resize] right-[-10px] [cursor:nesw-resize] bottom-[-10px] pointer-coarse:w-6 pointer-coarse:h-6 pointer-coarse:rounded-[7px] pointer-coarse:left-[-12px] pointer-coarse:top-[-12px] pointer-coarse:right-[-12px] pointer-coarse:bottom-[-12px]`} aria-hidden="true" />)}
         </div>}
       </div>
-      <div className="crop-preview-footer">
+      <div className={`crop-preview-footer flex justify-between items-center gap-[14px] flex-wrap text-[13px] text-[#6b798f] [&_span:first-child]:font-bold [&_span:first-child]:text-[#295dbd]`}>
         <span aria-live="polite">{dimensionsNote ? `선택 크기 ${dimensionsNote}` : "이미지를 불러오는 중…"}</span>
         <span>모바일 터치 · 마우스 · 키보드</span>
       </div>

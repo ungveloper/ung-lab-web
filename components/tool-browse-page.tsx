@@ -33,9 +33,9 @@ export function ToolBrowsePage(){
     const slug=/^\/tools\/([a-z0-9-]+)(?:[?#]|$)/.exec(href)?.[1];
     if(slug)saveToolReturn(slug,"/tools");
   }
-  return <main className="chat-browse-page" aria-label="모든 기능 보기" onClickCapture={captureToolNavigation}>
-      <AppContentContainer className="chat-browse-content">
-        <div className="chat-browse-heading"><h1>모든 기능 보기</h1></div>
+  return <main className={`chat-browse-page flex-1 min-h-0 overflow-auto [padding:28px_0_140px] max-[1050px]:[padding:25px_0_120px] max-[720px]:[padding:17px_0_110px] [.tools-app-shell_&]:min-h-full [.tools-app-shell_&]:overflow-visible [.workspace-page-body>__&]:flex-1 [.workspace-page-body>__&]:min-h-0 [.workspace-page-body>__&]:w-full [.workspace-page-body>__&]:overflow-y-auto`} aria-label="모든 기능 보기" onClickCapture={captureToolNavigation}>
+      <AppContentContainer className={`chat-browse-content [.tools-app-shell_&]:pt-0`}>
+        <div className={`chat-browse-heading mb-[26px] [&_h1]:text-[34px] [&_h1]:tracking-[-.055em] [&_h1]:[margin:12px_0] max-[720px]:mb-[23px] max-[720px]:[&_h1]:text-[28px]`}><h1>모든 기능 보기</h1></div>
         <ToolExplorer catalog={catalog} popularSlugs={popularitySlugs(popularity,catalog.map(tool=>tool.slug))}/>
       </AppContentContainer>
   </main>;

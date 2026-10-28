@@ -1,3 +1,4 @@
+import { assertStyle, assertOnlyTailwindStylesheet } from "./_tailwind-contract.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -24,10 +25,10 @@ test("도구 상세 URL에 직접 접속한 경우에도 이전 화면으로 이
   assert.match(read("components/tool-chat-home.tsx"), /get\("view"\)==="all"/);
   assert.match(read("components/tool-browse-page.tsx"), /saveToolReturn\(slug,"\/tools"\)/);
 });
-test("공유 사이드바 CSS가 홈과 상세 화면에 모두 제공된다", () => {
-  assert.match(read("app/layout.tsx"), /import "\.\/chat\.css"/);
-  assert.doesNotMatch(read("app/(workspace)/page.tsx"), /chat\.css/);
-  const css=read("app/chat.css");
-  assert.match(css,/\.tool-app-shell\{/);
-  assert.match(css,/\.chat-sidebar-recent/);
+test("공유 사이드바 CSS가 홈과 상세 화면에 모두 제공된다",()=>{
+  assertOnlyTailwindStylesheet();
+  assert.match(read("components/workspace-shell.tsx"),/<AppSidebar/);
+  assert.match(read("components/tool-page-shell.tsx"),/<AppSidebar/);
+  assertStyle('.chat-sidebar-recent','display','grid');
 });
+

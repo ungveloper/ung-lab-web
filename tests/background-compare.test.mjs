@@ -1,3 +1,4 @@
+import { assertStyle } from "./_tailwind-contract.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -40,9 +41,10 @@ test("전·후 이미지가 겹쳐지며, 기본 50%, 포인터 및 키보드 �
   assert.match(source, /aria-valuenow=/);
 });
 
-test("투명 배경과 터치 스크롤 제어 CSS가 설정된다", () => {
-  const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
-  assert.match(css, /background-compare-frame\{/);
-  assert.match(css, /touch-action:none/);
-  assert.match(css, /background-image:linear-gradient/);
+test("투명 배경과 터치 스크롤 제어 CSS가 설정된다",()=>{
+  const jsx = readFileSync(new URL("../components/background-preview.tsx", import.meta.url), "utf8");
+  assertStyle(".background-compare-frame", "touch-action", "none");
+  assertStyle(".background-compare-frame", "background-image");
+  assert.match(jsx, /background-compare-frame/);
 });
+

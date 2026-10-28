@@ -1,3 +1,4 @@
+import { assertStyle, assertOnlyTailwindStylesheet } from "./_tailwind-contract.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -33,8 +34,8 @@ test("정보 페이지는 한결같은 본문 계층과 목차, 접근 가능한
     assert.match(content, /site-info-lead/);
     assert.match(content, /site-info-toc/);
     assert.match(content, /<article/);
-    assert.match(content, /<section[^>]*className="site-info-section/);
-    const ids = [...content.matchAll(/<section[^>]*id="([^"]+)"[^>]*className="site-info-section[^"]*"|<section[^>]*className="site-info-section[^"]*"[^>]*id="([^"]+)"/g)].map(m => m[1] || m[2]);
+    assert.match(content, /<section[^>]*className=\{`site-info-section/);
+    const ids = [...content.matchAll(/<section[^>]*id="([^"]+)"[^>]*className=\{`site-info-section[^`]*`\}|<section[^>]*className=\{`site-info-section[^`]*`\}[^>]*id="([^"]+)"/g)].map(m => m[1] || m[2]);
     assert.ok(ids.length >= 3, `${page}: 내용 섹션 부족`);
     assert.equal(ids.length, new Set(ids).size, `${page}: 중복 id`);
     for (const id of ids) assert.ok(content.includes(`href="#${id}"`), `${page}: 목차 연결 없음: ${id}`);
@@ -51,12 +52,12 @@ test("약관·개인정보의 기능 설명과 광고 고지는 유지한다", (
   assert.doesNotMatch(src("app/(workspace)/contact/page.tsx"), /<iframe/);
 });
 
-test("정보 페이지 전용 CSS는 읽기 편한 본문과 모바일 여백, 키보드 포커스를 지원한다", () => {
-  const styles = src("app/site-info.css");
-  assert.match(src("app/layout.tsx"), /\.\/site-info\.css/);
-  assert.match(styles, /\.app-content-container\.content-page\.site-info-page/);
-  assert.match(styles, /\.site-info-section p\{[^}]*line-height:2/);
-  assert.match(styles, /@media\(max-width:720px\)/);
-  assert.match(styles, /focus-visible/);
-  assert.match(styles, /word-break:keep-all/);
+test("정보 페이지 전용 CSS는 읽기 편한 본문과 모바일 여백, 키보드 포커스를 지원한다",()=>{
+  assertOnlyTailwindStylesheet();
+  assertStyle('.app-content-container.content-page.site-info-page','padding','42px 0 116px');
+  assertStyle('.site-info-page .site-info-section p','line-height','2');
+  assertStyle('.site-info-page .site-info-section p','line-height','1.96','720px');
+  assertStyle('.site-info-page :is(a,button):focus-visible','outline');
+  assertStyle('.site-info-page .site-info-section p','word-break','keep-all');
 });
+
