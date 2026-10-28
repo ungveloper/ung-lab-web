@@ -23,7 +23,12 @@ async function notionFailure(stage: "schema" | "create", response: Response) {
 }
 
 
-type Property = { type?: string; status?: { options?: { name: string }[] } };
+type Property = {
+  type?: string;
+  status?: { options?: { name: string }[] };
+  select?: { options?: { name: string }[] };
+  multi_select?: { options?: { name: string }[] };
+};
 
 type ContactInput = { name?: unknown; email?: unknown; subject?: unknown; message?: unknown; website?: unknown };
 
@@ -76,8 +81,22 @@ export async function POST(request: NextRequest) {
     if (!available) return json("문의 설정을 확인해 주세요.", 503);
     const titleKey = Object.entries(available).find(([, p]) => p?.type === "title")?.[0];
     if (!titleKey) return json("문의 양식 설정을 확인해 주세요.", 503);
-    const title = `[문의] ${subject}`;
-    const properties: Record<string, unknown> = { [titleKey]: { title: richText(title) } };
+    // This data source is already the 문의 database; use the submitted subject as-is.
+    const properties: Record<string, unknown> = { [titleKey]: { title: richText(subject) } };
+
+    // Set the database's 구분 property when creating the page, not in a later update.
+    // Reject missing or mismatched options rather than silently creating an unclassified inquiry.
+    const categoryName = "⚙️ 웅이연구소";
+    const category = available["구분"];
+    if (category?.type === "select" && category.select?.options?.some(o => o.name === categoryName)) {
+      properties["구분"] = { select: { name: categoryName } };
+    } else if (category?.type === "multi_select" && category.multi_select?.options?.some(o => o.name === categoryName)) {
+      properties["구분"] = { multi_select: [{ name: categoryName }] };
+    } else {
+      // No user data, property schema, database IDs, or credentials in server logs.
+      console.error("[contact:notion] stage=schema category_property_or_option_invalid");
+      return json("문의 분류 설정을 확인해 주세요.", 503);
+    }
     for (const [key, value] of [["성함 혹은 닉네임", name], ["이메일", email]] as const) {
       if (key === titleKey) continue;
       const prop = propertyMap(available, key, value);
